@@ -65,13 +65,14 @@ if [[ $VERSION == "release" ]] ; then
   VERSION_ASSIGN=""
 else
   VERSION_ASSIGN="MFW_VERSION=${VERSION}"
+  export MFW_VERSION="${VERSION}"
 fi
 
 # start clean only if explicitely requested
 case $START_CLEAN in
   false|0) : ;;
   *) [ -f .config ] || make defconfig
-     make $MAKE_OPTIONS clean
+     make $MAKE_OPTIONS $VERSION_ASSIGN clean
      rm -fr build_dir staging_dir ;;
 esac
 
