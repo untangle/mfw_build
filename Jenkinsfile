@@ -183,6 +183,31 @@ pipeline {
             success { archiveMFW(device) }
           }
         }
+
+        stage('rpi3') {
+	  agent { label 'mfw' }
+
+          environment {
+            device = 'rpi3'
+            buildDir = "${env.HOME}/build-mfw-${env.BRANCH_NAME}-${device}"
+          }
+
+	  stages {
+            stage('Prep WS rpi3') {
+              steps { dir(buildDir) { checkout scm } }
+            }
+
+            stage('Build rpi3') {
+              steps {
+                buildMFW(device, libc, startClean, makeOptions, buildDir)
+              }
+            }
+          }
+
+          post {
+            success { archiveMFW(device) }
+          }
+        }
       }
 
       post {
