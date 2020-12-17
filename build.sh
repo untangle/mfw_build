@@ -11,7 +11,7 @@ export TZ="America/Los_Angeles"
 
 usage() {
   echo "Usage: $0 [-d <device>] [-l <libc>] [-v (latest|<branch>|<tag>)] [-c (false|true)]"
-  echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin (defaults to x86_64)"
+  echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
   echo "  -l <libc>                 : musl, glibc (defaults to musl)"
   echo "  -m <make options>         : pass those to OpenWRT's make \"as is\" (default is -j32)"
   echo "  -u                        : 'upstream' build, with no MFW feeds"
@@ -65,13 +65,14 @@ if [[ $VERSION == "release" ]] ; then
   VERSION_ASSIGN=""
 else
   VERSION_ASSIGN="MFW_VERSION=${VERSION}"
+  export MFW_VERSION="${VERSION}"
 fi
 
 # start clean only if explicitely requested
 case $START_CLEAN in
   false|0) : ;;
   *) [ -f .config ] || make defconfig
-     make $MAKE_OPTIONS clean
+     make $MAKE_OPTIONS $VERSION_ASSIGN clean
      rm -fr build_dir staging_dir ;;
 esac
 

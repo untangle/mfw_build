@@ -41,6 +41,7 @@ case $DEVICE in
   wrt1900) DEVICE=wrt1900acs ;;
   wrt3200) DEVICE=wrt3200acm ;;
   x86_64) DEVICE=x86-64 ;;
+  rpi3) DEVICE=rpi-3 ;;
 esac
 
 PACKAGES_FILE="sdwan-${DEVICE}-Packages_${FULL_VERSION}.txt"
@@ -51,6 +52,7 @@ mkdir -p $OUTPUT_DIR
 find bin/targets -iregex '.+\(gz\|img\|vdi\|vmdk\|bin\|kmod-mac80211-hwsi.+ipk\)' | grep -v Packages.gz | while read f ; do
   b=$(basename "$f")
   newName=${b/./_${FULL_VERSION}.}
+  newName=${newName/-brcm2808-brcm2710}
   newName=${newName/-squashfs}
   newName=${newName/-mvebu-cortexa9}
   newName=${newName/-mvebu-cortexa53}
