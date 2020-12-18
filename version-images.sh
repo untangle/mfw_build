@@ -52,7 +52,7 @@ mkdir -p $OUTPUT_DIR
 find bin/targets -iregex '.+\(gz\|img\|vdi\|vmdk\|bin\|kmod-mac80211-hwsi.+ipk\)' | grep -v Packages.gz | while read f ; do
   b=$(basename "$f")
   newName=${b/./_${FULL_VERSION}.}
-  newName=${newName/-brcm2808-brcm2710}
+  newName=${newName/-brcm2708-bcm2710}
   newName=${newName/-squashfs}
   newName=${newName/-mvebu-cortexa9}
   newName=${newName/-mvebu-cortexa53}
