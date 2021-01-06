@@ -1,6 +1,7 @@
 #! /bin/bash -x
 
 set -e
+set -o pipefail
 
 # hides perl warning about locale
 export LC_ALL=${LC_ALL:-C}
@@ -116,7 +117,7 @@ CONFIG_VERSION_PRODUCT="MFW"
 EOF
 
 # dynamic
-openwrtVersion="$(git describe --tags --abbrev=0 --match 'v[0-9][0-9].[0-9][0-9]*' | sed -e 's/^v//')"
+openwrtVersion="$(git describe --tags --abbrev=0 --match 'v[0-9][0-9].[0-9][0-9]*' 2> /dev/null | sed -e 's/^v//' || git log --decorate --pretty=oneline -n 10 | perl -lne 'if (m/^[a-f0-9]+ \(.+?\/(.+)\)/) {print $1 ; exit}')"
 mfwVersion="$(git describe --always --tags --long)"
 mfwShortVersion="$(git describe --always --tags --abbrev=0)"
 echo CONFIG_VERSION_CODE="$openwrtVersion" >> .config

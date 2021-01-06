@@ -16,6 +16,8 @@ RUN apt install -y libncurses-dev
 RUN apt install -y libssl-dev
 RUN apt install -y openssh-client
 RUN apt install -y python2.7
+RUN apt install -y python3
+RUN apt install -y rsync
 RUN apt install -y ruby-sass
 RUN apt install -y swig
 RUN apt install -y time
@@ -26,11 +28,22 @@ RUN apt install -y zlib1g-dev
 RUN apt clean
 RUN rm -rf /var/lib/apt/lists/* /var/cache/apt-show-versions/*
 
+# base dir
+ENV MFW=/home/mfw
+RUN mkdir -p ${MFW}
+
+# tools
+ENV TOOLS=${MFW}/tools
+VOLUME ${TOOLS}
+
+# allow building as root
 ENV FORCE_UNSAFE_CONFIGURE=1
-ENV SRC=/home/mfw/openwrt
+
+# source tree
+ENV SRC=${MFW}/openwrt
 RUN mkdir -p ${SRC}
 VOLUME ${SRC}
 
 WORKDIR ${SRC}
 
-ENTRYPOINT [ "./mfw/build.sh" ]
+ENTRYPOINT [ "bash", "-c", "${TOOLS}/build.sh" ]
