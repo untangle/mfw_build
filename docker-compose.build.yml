@@ -8,7 +8,8 @@ services:
       AWS_SECRET_ACCESS_KEY:
       SSH_AUTH_SOCK: /ssh-agent
     volumes:
-      - ../:/home/mfw/openwrt
+      - .:/home/mfw/tools
+      - ${PWD}:/home/mfw/openwrt
       - ${SSH_AUTH_SOCK}:/ssh-agent
 
   build-buster-local-container:
@@ -21,6 +22,7 @@ services:
       AWS_SECRET_ACCESS_KEY:
       SSH_AUTH_SOCK: /ssh-agent
     volumes:
+      - .:/home/mfw/tools
       - ${PWD}:/home/mfw/openwrt
       - ${SSH_AUTH_SOCK}:/ssh-agent
 
@@ -31,6 +33,7 @@ services:
     environment:
       SSH_AUTH_SOCK: /ssh-agent
     volumes:
-      - ../:/home/mfw/openwrt
+      - .:/home/mfw/tools
+      - ${PWD}:/home/mfw/openwrt
       - ${SSH_AUTH_SOCK}:/ssh-agent
 

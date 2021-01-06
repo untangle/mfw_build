@@ -21,11 +21,22 @@ RUN apt-get install -y zlib1g-dev
 RUN apt-get install -y ruby-sass
 RUN apt-get install -y openssh-client
 
+# base dir
+ENV MFW=/home/mfw
+RUN mkdir -p ${MFW}
+
+# tools
+ENV TOOLS=${MFW}/tools
+VOLUME ${TOOLS}
+
+# allow building as root
 ENV FORCE_UNSAFE_CONFIGURE=1
-ENV SRC=/home/mfw/openwrt
+
+# source tree
+ENV SRC=${MFW}/openwrt
 RUN mkdir -p ${SRC}
 VOLUME ${SRC}
 
 WORKDIR ${SRC}
 
-ENTRYPOINT [ "./mfw/build.sh" ]
+ENTRYPOINT [ "bash", "-c", "${TOOLS}/build.sh" ]
