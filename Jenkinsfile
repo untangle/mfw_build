@@ -1,7 +1,7 @@
 void buildMFW(String device, String libc, String startClean, String makeOptions, String buildDir) {
   sshagent (credentials: ['buildbot']) {
     sh "rm -fr ${buildDir}/mfw"
-    sh "git clone --depth 1 -b ${env.BRANCH_NAME} git@github.com:untangleinc/mfw_build ${buildDir}/mfw"
+    sh "git clone --depth 1 -b ${env.BRANCH_NAME} git@github.com:untangle/mfw_build ${buildDir}/mfw"
     sh "PWD=${buildDir} docker-compose -f ${buildDir}/mfw/docker-compose.build.yml -p mfw_${device} run build -d ${device} -l ${libc} -c ${startClean} -m '${makeOptions}' -v ${env.BRANCH_NAME}"
   }
   sh "rm -fr bin/targets bin/packages tmp/version.date"
