@@ -24,8 +24,9 @@ to build MFW you'll need to:
 Building in Docker:
 -------------------
 
-Grab the MFW-patched OpenWRT git repository:
+Grab the MFW-patched OpenWRT git repository, and the tools:
 ```
+git clone https://github.com/untangle/mfw_build.git
 git clone https://github.com/untangle/openwrt.git
 cd openwrt
 ```
@@ -40,7 +41,7 @@ perl -i -pe 's|https://github.com/untangle/mfw_feeds.git.*|https://github.com/my
 
 Build it for your intended device and libc targets:
 ```
-docker-compose -f mfw/docker-compose.build.yml run build (-d x86_64|wrt1900|wrt3200|omnia, -l musl|glibc)
+docker-compose -f ../mfw_build/docker-compose.build.yml run build (-d x86_64|wrt1900|wrt3200|omnia, -l musl|glibc, -m "-j 32") 
 ```
 
 The OpenWRT documentation warns that building with -jN can cause
@@ -49,7 +50,7 @@ with -j1. Adding V=s increases verbosity so that you'll have output to
 look at when/if something still fails to build:
 
 ```
-docker-compose -f mfw/docker-compose.build.yml run build (-d x86_64|wrt1900|wrt3200|omnia, -l musl|glibc) -m "-j1 V=s"
+docker-compose -f ../mfw_build/docker-compose.build.yml run build (-d x86_64|wrt1900|wrt3200|omnia, -l musl|glibc) -m "-j1 V=s"
 ```
 
 Building directly on a Stretch host:
@@ -60,15 +61,16 @@ Install build dependencies:
 apt-get install build-essential curl file gawk gettext git libncurses5-dev libssl-dev python2.7 swig time unzip wget zlib1g-dev
 ```
 
-Grab the MFW-patched OpenWRT git repository:
+Grab the MFW-patched OpenWRT git repository, and the tools:
 ```
+git clone https://github.com/untangle/mfw_build.git
 git clone https://github.com/untangle/openwrt.git
 cd openwrt
 ```
 
 Build it for your intended libc target:
 ```
-./mfw/build.sh [-d (x86_64|wrt1900|wrt3200|omnia)] [-l (musl|glibc)] [-v (<branch>|<tag>|release)]
+../mfw_build/build.sh [-d (x86_64|wrt1900|wrt3200|omnia)] [-l (musl|glibc)] [-v (<branch>|<tag>|release)] [-m "-j 32"]
 ```
 
 The OpenWRT documentation warns that building with -jN can cause
@@ -76,7 +78,7 @@ issues. If you hit a failure with -jN the first thing to do is to rerun
 with -j1. Adding V=s increases verbosity so that you'll have output to
 look at when/if something still fails to build:
 ```
-./mfw/build.sh [-d (x86_64|wrt1900|wrt3200|omnia)] [-l (musl|glibc)] [-v (<branch>|<tag>|release)] -m "-j1 V=s"
+../mfw_build/build.sh [-d (x86_64|wrt1900|wrt3200|omnia)] [-l (musl|glibc)] [-v (<branch>|<tag>|release)] -m "-j1 V=s"
 ```
 
 Setting up a VM
