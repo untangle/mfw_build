@@ -1,25 +1,32 @@
-FROM debian:stretch
+FROM debian:buster-slim
 
 USER root
 
-RUN apt-get update
-RUN apt-get install -y git
-RUN apt-get install -y curl
-RUN apt-get install -y build-essential
-RUN apt-get install -y gawk
-RUN apt-get install -y file
-RUN apt-get install -y wget
-RUN apt-get install -y unzip
-RUN apt-get install -y time
-RUN apt-get install -y python2.7
-RUN apt-get install -y libncurses5
-RUN apt-get install -y libncurses5-dev
-RUN apt-get install -y libssl-dev
-RUN apt-get install -y gettext
-RUN apt-get install -y swig
-RUN apt-get install -y zlib1g-dev
-RUN apt-get install -y ruby-sass
-RUN apt-get install -y openssh-client
+RUN echo 'APT::Install-Recommends "false";' > /etc/apt/apt.conf.d/no-recommends && \ 
+    echo 'APT::Install-Suggests "false";' >> /etc/apt/apt.conf.d/no-recommends
+
+RUN apt update -q
+RUN apt install -y build-essential
+RUN apt install -y curl
+RUN apt install -y file
+RUN apt install -y gawk
+RUN apt install -y gettext
+RUN apt install -y git
+RUN apt install -y libncurses-dev
+RUN apt install -y libssl-dev
+RUN apt install -y openssh-client
+RUN apt install -y python2.7
+RUN apt install -y python3
+RUN apt install -y rsync
+RUN apt install -y ruby-sass
+RUN apt install -y swig
+RUN apt install -y time
+RUN apt install -y unzip
+RUN apt install -y wget
+RUN apt install -y zlib1g-dev
+
+RUN apt clean
+RUN rm -rf /var/lib/apt/lists/* /var/cache/apt-show-versions/*
 
 # base dir
 ENV MFW=/home/mfw
