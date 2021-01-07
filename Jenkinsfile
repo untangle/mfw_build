@@ -232,9 +232,10 @@ pipeline {
 
           environment {
             device = 'x86_64'
+            buildDir = "${env.HOME}/build-mfw-${env.BRANCH_NAME}-${device}"
 	    rootfsTarballName = 'mfw-x86-64-generic-rootfs.tar.gz'
 	    rootfsTarballPath = "bin/targets/x86/64/${rootfsTarballName}"
-	    dockerfile = 'docker-compose.test.yml'
+	    dockerfile = '${buildDir}/mfw/docker-compose.test.yml'
           }
 
           stages {
