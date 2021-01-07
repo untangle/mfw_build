@@ -10,9 +10,9 @@ void buildMFW(String device, String libc, String startClean, String makeOptions,
   sh "cp -r ${buildDir}/tmp/version.date tmp/"
 }
 
-void archiveMFW(String device) {
+void archiveMFW(String device, String buildDir) {
   def outputDir="tmp/artifacts"
-  sh "./mfw/version-images.sh -d ${device} -o ${outputDir} -c -t \$(cat tmp/version.date)"
+  sh "${buildDir}/mfw/version-images.sh -d ${device} -o ${outputDir} -c -t \$(cat tmp/version.date)"
   archiveArtifacts artifacts: "${outputDir}/*", fingerprint: true
   sh "rm -fr ${outputDir}"
 }
@@ -57,7 +57,7 @@ pipeline {
           }
 
           post {
-            success { archiveMFW(device) }
+            success { archiveMFW(device, buildDir) }
           }
         }
 
@@ -82,7 +82,7 @@ pipeline {
           }
 
           post {
-            success { archiveMFW(device) }
+            success { archiveMFW(device, buildDir) }
           }
         }
 
@@ -107,7 +107,7 @@ pipeline {
         //   }
 
         //   post {
-        //     success { archiveMFW(device) }
+        //     success { archiveMFW(device, buildDir) }
         //   }
         // }
 
@@ -132,7 +132,7 @@ pipeline {
           }
 
           post { 
-            success { archiveMFW(device) }
+            success { archiveMFW(device, buildDir) }
           }
         }
 
@@ -157,7 +157,7 @@ pipeline {
           }
 
           post { 
-            success { archiveMFW(device) }
+            success { archiveMFW(device, buildDir) }
           }
         }
 
@@ -182,7 +182,7 @@ pipeline {
           }
 
           post {
-            success { archiveMFW(device) }
+            success { archiveMFW(device, buildDir) }
           }
         }
 
@@ -207,7 +207,7 @@ pipeline {
           }
 
           post {
-            success { archiveMFW(device) }
+            success { archiveMFW(device, buildDir) }
           }
         }
       }
