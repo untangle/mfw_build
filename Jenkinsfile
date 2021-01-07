@@ -243,7 +243,7 @@ pipeline {
               steps {
                 unstash(name:"rootfs-${device}")
                 sh("test -f ${rootfsTarballPath}")
-		sh("mv -f ${rootfsTarballPath} mfw")
+		sh("mv -f ${rootfsTarballPath} ${buildDir}/mfw")
               }
             }
 
