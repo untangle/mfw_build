@@ -46,4 +46,4 @@ VOLUME ${SRC}
 
 WORKDIR ${SRC}
 
-ENTRYPOINT [ "bash", "-c", "${TOOLS}/build.sh" ]
+ENTRYPOINT [ "/home/mfw/build.sh" ]
