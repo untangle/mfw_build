@@ -53,6 +53,7 @@ done
 # main
 trap cleanup ERR INT
 CURDIR=$(dirname $(readlink -f $0))
+source ${CURDIR}/common.sh
 
 # grab github.com's ssh key, and check ssh-agent;
 # this is needed for private repositories (see MFW-877)
@@ -117,9 +118,9 @@ CONFIG_VERSION_PRODUCT="MFW"
 EOF
 
 # dynamic
-openwrtVersion="$(git describe --tags --abbrev=0 --match 'v[0-9][0-9].[0-9][0-9]*' 2> /dev/null | sed -e 's/^v//' || git log --decorate --pretty=oneline -n 10 | perl -lne 'if (m/^[a-f0-9]+ \(.+?\/(.+)\)/) {print $1 ; exit}')"
-mfwVersion="$(git describe --always --tags --long)"
-mfwShortVersion="$(git describe --always --tags --abbrev=0)"
+openwrtVersion="$(get_openwrt_version)"
+mfwVersion="$(get_mfw_version)"
+mfwShortVersion="$(get_mfw_short_version)"
 echo CONFIG_VERSION_CODE="$openwrtVersion" >> .config
 echo CONFIG_VERSION_NUMBER="$mfwVersion" >> .config
 echo $mfwVersion >| $VERSION_FILE

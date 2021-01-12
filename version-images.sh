@@ -1,6 +1,7 @@
 #! /bin/bash
 
 set -e
+set -o pipefail
 
 # hides perl warning about locale
 export LC_ALL=${LC_ALL:-C}
@@ -34,8 +35,11 @@ if [ -z "$OUTPUT_DIR" ] || [ -z "$DEVICE" ] ; then
 fi
 
 # main
-SHORT_VERSION="$(git describe --always --tags --abbrev=0)"
-FULL_VERSION="$(git describe --always --tags --long)_${TS}"
+CURDIR=$(dirname $(readlink -f $0))
+source ${CURDIR}/common.sh
+
+SHORT_VERSION="$(get_openwrt_version)"
+FULL_VERSION="$(get_mfw_version)_${TS}"
 
 case $DEVICE in
   wrt1900) DEVICE=wrt1900acs ;;
