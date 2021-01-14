@@ -10,7 +10,7 @@ REPOSITORIES="bpfgen classd mfw_admin mfw_build mfw_feeds nft_dict packetd sync-
 help() {
   echo "$0 <new_branch> <from_branch> <new_version> [simulate]"
   echo "for instance:"
-  echo "  '$0 release-3.0 master 3.1' creates a 3.0 branch from master, and sets master to be 3.1"
+  echo "  '$0 release-3.0 master v3.1' creates a 3.0 branch from master, and sets master to be v3.1"
   echo "  '$0 release-4.1 release-4.0 ""' creates a 4.1 branch from release-4.0, without changing the version in release-4.0"
 }
 
