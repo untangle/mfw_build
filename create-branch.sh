@@ -62,12 +62,6 @@ perl -i -pe 's/(?<=mfw_feeds.git).*/;'$BRANCH_NAME'/' feeds.conf.mfw
 git commit -a -m "Point to branch $BRANCH_NAME for mfw_feeds"
 popd
 
-# udpate subtree in openwrt
-pushd openwrt
-git checkout -b $BRANCH_NAME
-git subtree pull --prefix=mfw -m 'Update mfw_build subtree as part of release branching' $tmpDir/mfw_build $FROM
-popd
-
 # branch each repository
 for repo in $REPOSITORIES ; do
   branch $repo $SIMULATE
