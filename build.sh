@@ -28,7 +28,7 @@ usage() {
 VERSION_DATE_FILE="version.date"
 VERSION_FILE="version"
 cleanup() {
-  git checkout -- ${VERSION_FILE} ${VERSION_DATE_FILE} || true
+  git checkout -- ${VERSION_FILE} ${VERSION_DATE_FILE} 2> /dev/null || true
 }
 
 # CLI options
