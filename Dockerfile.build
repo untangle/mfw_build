@@ -17,6 +17,7 @@ RUN apt install -y libssl-dev
 RUN apt install -y openssh-client
 RUN apt install -y python2.7
 RUN apt install -y python3
+RUN apt install -y qemu-utils
 RUN apt install -y rsync
 RUN apt install -y ruby-sass
 RUN apt install -y swig
