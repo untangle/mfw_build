@@ -70,6 +70,8 @@ else
   export MFW_VERSION="${VERSION}"
 fi
 
+rm -fr bin/targets
+
 # start clean only if explicitely requested
 case $START_CLEAN in
   false|0) : ;;
