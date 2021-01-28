@@ -94,6 +94,10 @@ if [ -z "$NO_MFW_FEEDS" ]; then
   # add MFW feed definitions
   cp ${CURDIR}/feeds.conf.mfw feeds.conf
 
+  # point to correct branch for packages
+  packages_feed=$(grep -P '^src-git packages' feeds.conf.default)
+  perl -i -pe "s#^src-git packages .+#${packages_feed}#" feeds.conf
+
   # install feeds
   rm -fr {.,package}/feeds/mfw*
   ./scripts/feeds update -a
