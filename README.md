@@ -53,12 +53,12 @@ look at when/if something still fails to build:
 docker-compose -f ../mfw_build/docker-compose.build.yml run build (-d x86_64|wrt1900|wrt3200|omnia, -l musl|glibc) -m "-j1 V=s"
 ```
 
-Building directly on a Stretch host:
+Building directly on a Buster host:
 ------------------------------------
 
 Install build dependencies:
 ```
-apt-get install build-essential curl file gawk gettext git libncurses5-dev libssl-dev python2.7 swig time unzip wget zlib1g-dev
+apt-get install build-essential curl file gawk gettext git libncurses-dev libssl-dev openssh-client python2.7 python3 qemu-utils rsync ruby-sass swig time unzip wget zlib1g-dev 
 ```
 
 Grab the MFW-patched OpenWRT git repository, and the tools:
