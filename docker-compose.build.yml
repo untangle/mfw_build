@@ -7,6 +7,7 @@ services:
       AWS_ACCESS_KEY_ID:
       AWS_SECRET_ACCESS_KEY:
       SSH_AUTH_SOCK: /ssh-agent
+    env_file: pkg_source.env
     volumes:
       - .:/home/mfw/tools
       - ${PWD}:/home/mfw/openwrt
@@ -16,6 +17,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.build
+    env_file: pkg_source.env
     environment:
       BUILD_URL:
       AWS_ACCESS_KEY_ID:

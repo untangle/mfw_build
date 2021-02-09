@@ -81,6 +81,19 @@ look at when/if something still fails to build:
 ../mfw_build/build.sh [-d (x86_64|wrt1900|wrt3200|omnia)] [-l (musl|glibc)] [-v (<branch>|<tag>|release)] -m "-j1 V=s"
 ```
 
+Building one component from a specific repository/branch
+--------------------------------------------------------
+
+All the variables listed in `pkg_source.env` can be set in the calling
+shell, in order to build some components from a different repository
+and/or branch than the rest of the build.
+
+For instance, to build `packetd` from a different source:
+
+```
+PKG_SOURCE_URL_packetd=https://github.com/sdelafond/packetd PKG_SOURCE_VERSION_packetd=some-branch docker-compose -f $mfw_b/docker-compose.build.yml run build -d x86_64 [...]
+```
+
 Setting up a VM
 ===============
 
