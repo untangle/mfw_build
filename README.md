@@ -1,10 +1,10 @@
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![ReadTheDocs](https://readthedocs.org/projects/microfirewall/badge/?version=latest)](https://microfirewall.readthedocs.io/)
 
-Building OpenWRT with the MFW Feed
+Building OpenWrt with the MFW Feed
 =======================================
 
-The steps below describe building an OpenWRT x86 image with support for
+The steps below describe building an OpenWrt x86 image with support for
 running packetd. This is accomplished by pulling in a custom feed with
 the packetd application and a couple of dependencies.
 
@@ -18,13 +18,13 @@ to build MFW you'll need to:
 1. fork [mfw_feeds](https://github.com//untangle/mfw_feeds)
 2. create a personalized branch in that fork, where you'll set
    `CONFIG_PACKAGE_classd=n` in `configs/common/packages`.
-3. point your MFW-patched OpenWRT clone to that branch (more
+3. point your MFW-patched OpenWrt clone to that branch (more
    instructions below)
 
 Building in Docker:
 -------------------
 
-Grab the MFW-patched OpenWRT git repository, and the tools:
+Grab the MFW-patched OpenWrt git repository, and the tools:
 ```
 git clone https://github.com/untangle/mfw_build.git
 git clone https://github.com/untangle/openwrt.git
@@ -44,7 +44,7 @@ Build it for your intended device and libc targets:
 docker-compose -f ../mfw_build/docker-compose.build.yml run build (-d x86_64|wrt1900|wrt3200|omnia, -l musl|glibc, -m "-j 32") 
 ```
 
-The OpenWRT documentation warns that building with -jN can cause
+The OpenWrt documentation warns that building with -jN can cause
 issues. If you hit a failure with -jN the first thing to do is to rerun
 with -j1. Adding V=s increases verbosity so that you'll have output to
 look at when/if something still fails to build:
@@ -61,7 +61,7 @@ Install build dependencies:
 apt-get install build-essential curl file gawk gettext git libncurses-dev libssl-dev openssh-client python2.7 python3 qemu-utils rsync ruby-sass swig time unzip wget zlib1g-dev 
 ```
 
-Grab the MFW-patched OpenWRT git repository, and the tools:
+Grab the MFW-patched OpenWrt git repository, and the tools:
 ```
 git clone https://github.com/untangle/mfw_build.git
 git clone https://github.com/untangle/openwrt.git
@@ -73,7 +73,7 @@ Build it for your intended libc target:
 ../mfw_build/build.sh [-d (x86_64|wrt1900|wrt3200|omnia)] [-l (musl|glibc)] [-v (<branch>|<tag>|release)] [-m "-j 32"]
 ```
 
-The OpenWRT documentation warns that building with -jN can cause
+The OpenWrt documentation warns that building with -jN can cause
 issues. If you hit a failure with -jN the first thing to do is to rerun
 with -j1. Adding V=s increases verbosity so that you'll have output to
 look at when/if something still fails to build:
@@ -99,7 +99,7 @@ Read further instructions below for VirtualBox
 
 In QEMU
 -------
-To launch OpenWRT x86\_64 in QEMU, make sure br0 is a pre-existing
+To launch OpenWrt x86\_64 in QEMU, make sure br0 is a pre-existing
 bridge with external access. On my machine, it looks like this, with
 eth0 being the actual physical interface connected to my network:
 ```
@@ -124,9 +124,9 @@ In Virtualbox
 Create a new VM using the vdi image, but *do not boot it* before
 changing its network settings: you want the 1st interface to be some
 some of an internal net, without a need for connectivity (this will be
-eth0, which OpenWRT uses as its internal interface), and the 2nd
+eth0, which OpenWrt uses as its internal interface), and the 2nd
 interface should ideally be bridged (this will be eth1, used as the
-external interface by OpenWRT)
+external interface by OpenWrt)
 
 Beware: SSH will by default not require a password!
 
@@ -142,10 +142,10 @@ grabbed from DHCP through your bridged interface:
 ip ad show eth1
 ```
 
-Using the OpenWRT admin UI
+Using the OpenWrt admin UI
 --------------------------
 
-You can also install the OpenWRT admin UI if you need it:
+You can also install the OpenWrt admin UI if you need it:
 ```
 opkg update
 opkg install uhttpd
