@@ -70,12 +70,17 @@ done
 # update version in master
 if [[ -n "$NEW_VERSION" ]] ; then
   pushd openwrt
+  VERSION_FILE=version.mfw
   git checkout origin/master
-  git tag -a -m "Release branching: new version is ${NEW_VERSION}" $NEW_VERSION
+  echo -e "# This file only help when branching: it's not used for versioning at all\n$NEW_VERSION" >| $VERSION_FILE
+  git add $VERSION_FILE
+  msg="Release branching: new version is $NEW_VERSION"
+  git commit -m "$msg"
+  git tag -a -m "$msg" $NEW_VERSION
   git push --tags $SIMULATE
   popd
 fi
 
 # exit tmpDir and remove i t
 popd
-rm -rf "${tmpDir}"
+[ -n $SIMULATE ] || rm -rf "${tmpDir}"
