@@ -11,7 +11,7 @@ help() {
   echo "$0 <new_branch> <from_branch> <new_version> [simulate]"
   echo "for instance:"
   echo "  '$0 release-3.0 master v3.1' creates a 3.0 branch from master, and sets master to be v3.1"
-  echo "  '$0 release-4.1 release-4.0 ""' creates a 4.1 branch from release-4.0, without changing the version in release-4.0"
+  echo "  '$0 release-4.1 release-4.0 ""' creates a 4.1 branch from release-4.0, without changing the version in release-4.1"
 }
 
 clone() {
@@ -70,12 +70,9 @@ done
 # update version in master
 if [[ -n "$NEW_VERSION" ]] ; then
   pushd openwrt
-  VERSION_FILE=version.mfw
   git checkout origin/master
-  echo -e "# This file only help when branching: it's not used for versioning at all\n$NEW_VERSION" >| $VERSION_FILE
-  git add $VERSION_FILE
   msg="Release branching: new version is $NEW_VERSION"
-  git commit -m "$msg"
+  git commit --allow-empty -m "$msg"
   git tag -a -m "$msg" $NEW_VERSION
   git push --tags $SIMULATE
   popd
