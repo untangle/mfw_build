@@ -74,7 +74,8 @@ if [[ -n "$NEW_VERSION" ]] ; then
   msg="Release branching: new version is $NEW_VERSION"
   git commit --allow-empty -m "$msg"
   git tag -a -m "$msg" $NEW_VERSION
-  git push --tags $SIMULATE
+  git push $SIMULATE origin HEAD:master
+  git push $SIMULATE --tags
   popd
 fi
 
