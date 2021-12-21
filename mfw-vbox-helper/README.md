@@ -3,7 +3,7 @@
 ## About
 
 **mfw-cli** was born from the need to avoid the daily (or often)<br/>
-repetitive manual process of creating new SD-WAN virtual machines from latest builds.<br/>
+repetitive manual process of creating new Micro Edge virtual machines from latest builds.<br/>
 It can be helpful for QA enginners too when dealing with testing this builds.
 
 It uses Jenkins JSON APIs to fetch the data.
@@ -71,7 +71,7 @@ Below is the `mfw` help command showing available options
 
 usage: mfw [-h] [-l [LIMIT] | -i [INSTALL_NUMBER] | -d [BUILD_NUMBER]] [-v]
 
-Untangle SD-WAN Router tools
+Untangle Micro Edge tools
 - info and status about latest builds
 - download artifacts
 - create VirtualBox instances from x86-64 vdi
@@ -332,7 +332,7 @@ put the public key on the guest machine (assuming there is already an `id_rsa.pu
 ~$ ssh root@192.168.101.167 "mkdir /root/.ssh && tee -a /root/.ssh/authorized_keys" < ~/.ssh/id_rsa.pub
 ```
 
-To access the SD-WAN admin interface just browse to</br>
+To access the Micro Edge admin interface just browse to</br>
 `http://192.168.101.167/admin`
 
 

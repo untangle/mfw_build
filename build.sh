@@ -137,8 +137,8 @@ if [ -n "$BUILD_URL" ] ; then # Jenkins build
     wrt3200) DEVICE=wrt3200acm ;;
     x86_64) DEVICE=x86-64 ;;
   esac
-  packagesList="sdwan-${DEVICE}-Packages_${mfwVersion}_${SOURCE_DATE}.txt"
-  echo CONFIG_VERSION_MANUFACTURER_URL="https://downloads.untangle.com/public/sdwan/${mfwShortVersion}/manifest/${packagesList}" >> .config
+  packagesList="mfw-${DEVICE}-Packages_${mfwVersion}_${SOURCE_DATE}.txt"
+  echo CONFIG_VERSION_MANUFACTURER_URL="https://downloads.untangle.com/public/mfw/${mfwShortVersion}/manifest/${packagesList}" >> .config
 else
   echo CONFIG_VERSION_MANUFACTURER_URL="developer build" >> .config
 fi

@@ -52,7 +52,7 @@ def api_request(url):
 def find_vdi_artifact(artifacts):
     # Find the x86-64 vdi artifact required for the VirtualBox
     files = [art for art in artifacts
-        if re.search('sdwan-x86-64-combined_v(.*).vdi', art['fileName'])
+        if re.search('mfw-x86-64-combined_v(.*).vdi', art['fileName'])
     ]
     if files:
         return files[0]
@@ -166,7 +166,7 @@ def download(build_no, vbox=False):
 
     def download_file(artifact_path):
         file_url = OPENWRT_BASE_URL + str(build_no) + '/artifact/' + artifact_path
-        file_name = 'sdwan-' + str(build_no) + '.vdi'
+        file_name = 'mfw-' + str(build_no) + '.vdi'
 
         if vbox:
             print('Downloading as "' + file_name + '" to ' + os.getcwd() + ' ...\n')
@@ -185,12 +185,12 @@ def download(build_no, vbox=False):
     def show_menu():
         # split artifacts by appliance
         categories = [
-            'sdwan-x86-64',
-            'sdwan-wrt1900acs',
-            'sdwan-wrt3200acm',
-            'sdwan-wrt32x',
-            'sdwan-espressobin',
-            'sdwan-omnia',
+            'mfw-x86-64',
+            'mfw-wrt1900acs',
+            'mfw-wrt3200acm',
+            'mfw-wrt32x',
+            'mfw-espressobin',
+            'mfw-omnia',
             'openwrt-x86-64',
             'openwrt-wrt3200acm',
             'ALL'
@@ -236,7 +236,7 @@ def download(build_no, vbox=False):
     show_menu()
 
 def clean(build_no):
-    box_name = 'sdwan-' + str(build_no)
+    box_name = 'mfw-' + str(build_no)
 
     is_running = os.popen('vboxmanage list runningvms | grep "' + box_name + '"').read()
     is_installed = os.popen('vboxmanage list vms | grep "' + box_name + '"').read()
@@ -265,7 +265,7 @@ def clean(build_no):
 
 
 def create_vbox(build_no):
-    box_name = 'sdwan-' + str(build_no)
+    box_name = 'mfw-' + str(build_no)
     box_file = box_name + '.vdi'
     bridged_intf = ''
 
@@ -301,21 +301,21 @@ def create_vbox(build_no):
     while not bridged_intf:
         bridged_intf = input('Enter device name: ')
 
-    # create the sdwan box
+    # create the mfw box
     create_cmd = 'vboxmanage createvm \
         --name "' + box_name + '" \
         --ostype Linux_64 \
         --register'
 
-    # modify sdwan box
+    # modify mfw box
     modify_cmd = 'vboxmanage modifyvm "' + box_name + '" \
-        --description "Untangle SD-WAN build ' + box_name + '" \
+        --description "Untangle Micro Edge build ' + box_name + '" \
         --memory 1024 \
         --vram 16 \
         --audio none \
         --nic1 intnet \
         --nic2 bridged \
-        --intnet1 "sdwan" \
+        --intnet1 "mfw" \
         --bridgeadapter2 "' + bridged_intf + '"'
 
     # add storage controller
@@ -343,7 +343,7 @@ def create_vbox(build_no):
 
 # Arguments parser
 parser = argparse.ArgumentParser(
-    description='Untangle SD-WAN Router tools\n' +
+    description='Untangle Micro Edge tools\n' +
         '- info and status about latest builds\n' +
         '- download artifacts\n' +
         '- create VirtualBox instances from x86-64 vdi\n',
