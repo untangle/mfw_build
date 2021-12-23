@@ -52,7 +52,7 @@ def api_request(url):
 def find_vdi_artifact(artifacts):
     # Find the x86-64 vdi artifact required for the VirtualBox
     files = [art for art in artifacts
-        if re.search('mfw-x86-64-combined_v(.*).vdi', art['fileName'])
+        if re.search('(mfw|sdwan)-x86-64-combined_v(.*).vdi', art['fileName'])
     ]
     if files:
         return files[0]
@@ -180,6 +180,14 @@ def download(build_no, vbox=False):
                 os.system('wget -q --show-progress ' + file_url)
         except:
             print(c_red('Unable to download file') + '\n')
+            if vbox:
+                file_name = 'sdwan-' + str(build_no) + '.vdi'
+                try:
+                    os.system('wget -q --show-progress -O ' + file_name + ' ' + file_url)
+                    return
+                except:
+                    print(c_red('Unable to download file') + '\n')
+                    sys.exit(1)
             sys.exit(1)
 
     def show_menu():
