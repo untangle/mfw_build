@@ -3,7 +3,7 @@
 ## About
 
 **mfw-cli** was born from the need to avoid the daily (or often)<br/>
-repetitive manual process of creating new SD-WAN virtual machines from latest builds.<br/>
+repetitive manual process of creating new Micro Edge virtual machines from latest builds.<br/>
 It can be helpful for QA enginners too when dealing with testing this builds.
 
 It uses Jenkins JSON APIs to fetch the data.
@@ -26,7 +26,7 @@ The mfw-cli requires:
 
 ## Install
 
-[**Download mfw-cli (mfw.py)**](https://github.com/untangle/mfw_build/raw/master/sdwan-vbox-helper/mfw.py)
+[**Download mfw-cli (mfw.py)**](https://github.com/untangle/mfw_build/raw/master/mfw-vbox-helper/mfw.py)
 
 The mfw-cli is not actually installed, you just have the run the python script (`mfw.py`). To run it just type:
 ```
@@ -71,7 +71,7 @@ Below is the `mfw` help command showing available options
 
 usage: mfw [-h] [-l [LIMIT] | -i [INSTALL_NUMBER] | -d [BUILD_NUMBER]] [-v]
 
-Untangle SD-WAN Router tools
+Untangle Micro Edge tools
 - info and status about latest builds
 - download artifacts
 - create VirtualBox instances from x86-64 vdi
@@ -101,13 +101,13 @@ Last successful build: 883
 
 no. | status  | timestamp      | dur.    | vdi file name
 -----------------------------------------------------------
-883 | SUCCESS | Oct 02 02:47PM | 0:23:37 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0448.vdi
-882 | FAILURE | Oct 02 02:28PM | 0:25:49 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0432.vdi
-881 | FAILURE | Oct 02 12:19PM | 2:15:06 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0359.vdi
+883 | SUCCESS | Oct 02 02:47PM | 0:23:37 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0448.vdi
+882 | FAILURE | Oct 02 02:28PM | 0:25:49 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0432.vdi
+881 | FAILURE | Oct 02 12:19PM | 2:15:06 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0359.vdi
 880 | FAILURE | Oct 02 12:18PM | 2:09:31 | None
-879 | SUCCESS | Oct 02 12:13PM | 2:17:31 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0308.vdi
-878 | SUCCESS | Oct 02 12:02PM | 2:27:47 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0241.vdi
-877 | SUCCESS | Oct 02 12:00PM | 2:28:05 | sdwan-x86-64-combined_v1.1-7-g5ce74334aa_20191002T0212.vdi
+879 | SUCCESS | Oct 02 12:13PM | 2:17:31 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0308.vdi
+878 | SUCCESS | Oct 02 12:02PM | 2:27:47 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0241.vdi
+877 | SUCCESS | Oct 02 12:00PM | 2:28:05 | mfw-x86-64-combined_v1.1-7-g5ce74334aa_20191002T0212.vdi
 876 | FAILURE | Oct 02 09:46AM | 2:25:16 | None
 875 | FAILURE | Oct 02 09:43AM | 0:30:26 | None
 874 | FAILURE | Oct 01 05:16PM | 0:29:22 | None
@@ -125,9 +125,9 @@ Last successful build: 883
 
 no. | status  | timestamp      | dur.    | vdi file name
 -----------------------------------------------------------
-883 | SUCCESS | Oct 02 02:47PM | 0:23:37 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0448.vdi
-882 | FAILURE | Oct 02 02:28PM | 0:25:49 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0432.vdi
-881 | FAILURE | Oct 02 12:19PM | 2:15:06 | sdwan-x86-64-combined_v1.1-9-g6e953de52a_20191002T0359.vdi
+883 | SUCCESS | Oct 02 02:47PM | 0:23:37 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0448.vdi
+882 | FAILURE | Oct 02 02:28PM | 0:25:49 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0432.vdi
+881 | FAILURE | Oct 02 12:19PM | 2:15:06 | mfw-x86-64-combined_v1.1-9-g6e953de52a_20191002T0359.vdi
 ```
 
 ### Downloads
@@ -149,12 +149,12 @@ Est. duration: 1:42:58
 ------------------------
 Select appliance
 
-1) sdwan-x86-64
-2) sdwan-wrt1900acs
-3) sdwan-wrt3200acm
-4) sdwan-wrt32x
-5) sdwan-espressobin
-6) sdwan-omnia
+1) mfw-x86-64
+2) mfw-wrt1900acs
+3) mfw-wrt3200acm
+4) mfw-wrt32x
+5) mfw-espressobin
+6) mfw-omnia
 7) openwrt-x86-64
 8) openwrt-wrt3200acm
 9) ALL
@@ -169,23 +169,23 @@ Selecting option 5 from categories will list available files for espressobin
 ```
 Select artifact
 
-1) sdwan-espressobin-ext4_v1.1-9-g6e953de52a_20191002T0454.img.gz
-2) sdwan-espressobin-initramfs-kernel_v1.1-9-g6e953de52a_20191002T0454.img
-3) sdwan-espressobin-Packages_v1.1-9-g6e953de52a_20191002T0454.txt
-4) sdwan-espressobin_v1.1-9-g6e953de52a_20191002T0454.img.gz
+1) mfw-espressobin-ext4_v1.1-9-g6e953de52a_20191002T0454.img.gz
+2) mfw-espressobin-initramfs-kernel_v1.1-9-g6e953de52a_20191002T0454.img
+3) mfw-espressobin-Packages_v1.1-9-g6e953de52a_20191002T0454.txt
+4) mfw-espressobin_v1.1-9-g6e953de52a_20191002T0454.img.gz
 
 Type "x" to exit
 
 Choose: _
 ```
 
-Selecting the 4th option will start download the sdwan-espressobin_v1.1-9 image
+Selecting the 4th option will start download the mfw-espressobin_v1.1-9 image
 
 ```
 Choose: 4
-Downloading to /home/dan/untangle/mfw_build/sdwan-vbox-helper ...
+Downloading to /home/dan/untangle/mfw_build/mfw-vbox-helper ...
 
-sdwan-espressobin_v1.1-9-g6e95350 100%[==================================>]  26.84M  4.74MB/s    in 15s
+mfw-espressobin_v1.1-9-g6e95350 100%[==================================>]  26.84M  4.74MB/s    in 15s
 ```
 > **Important!** Files are downloaded in the current folder.<br/>
 > There is no option yet to choose where to save them.
@@ -193,7 +193,7 @@ sdwan-espressobin_v1.1-9-g6e95350 100%[==================================>]  26.
 ### Creating VirtualBox instances
 
 Creates VirtualBox machine using x86-64 vdi file.<br/>
-There is a naming convention so the VirtualBox and VDI file are named *sdwan-<build_number>*.<br/>
+There is a naming convention so the VirtualBox and VDI file are named *mfw-<build_number>*.<br/>
 The mfw-cli tries to manage conflicts if a box with the same name already exists and/or running.
 
 To download and create the box instance for a specific build, run `mfw -i <build_number>`
@@ -211,16 +211,16 @@ Timestamp:     Oct 02 02:47PM
 Duration:      0:23:37
 Est. duration: 1:42:58
 ------------------------
-Downloading as "sdwan-883.vdi" to /home/dan/untangle/mfw_build/sdwan-vbox-helper ...
+Downloading as "mfw-883.vdi" to /home/dan/untangle/mfw_build/mfw-vbox-helper ...
 
-sdwan-883.vdi                     100%[==================================>]  31.00M  5.38MB/s    in 16s
+mfw-883.vdi                     100%[==================================>]  31.00M  5.38MB/s    in 16s
 ```
 
 Before creating the machine, you must choose the interface for the box bridged adapter<br/>
 from a list provided by querying the system. In below case was option 2 (enp0s31f6)
 
 ```
-Select interface (device) for the "sdwan-883" box bridged adapter:
+Select interface (device) for the "mfw-883" box bridged adapter:
 1) lo -> 127.0.0.1/8
 2) enp0s31f6 -> 192.168.101.206/24
 3) tun0 -> 172.17.0.46
@@ -229,15 +229,15 @@ Select interface (device) for the "sdwan-883" box bridged adapter:
 Choose (1,2,3,4): _
 ```
 
-Then virtual box named `sdwan-<build_number>` is created,<br/>
+Then virtual box named `mfw-<build_number>` is created,<br/>
 having attached the media storage with the same name, which was previously downloaded.
 ```
 Choose (1,2,3,4): 2
-Virtual machine 'sdwan-883' is created and registered.
+Virtual machine 'mfw-883' is created and registered.
 UUID: 61e1dc74-c0a8-463a-9ddc-c42a87661631
-Settings file: '/home/dan/VirtualBox VMs/sdwan-883/sdwan-883.vbox'
-Waiting for VM "sdwan-883" to power on...
-VM "sdwan-883" has been successfully started.
+Settings file: '/home/dan/VirtualBox VMs/mfw-883/mfw-883.vbox'
+Waiting for VM "mfw-883" to power on...
+VM "mfw-883" has been successfully started.
 ```
 
 
@@ -332,7 +332,7 @@ put the public key on the guest machine (assuming there is already an `id_rsa.pu
 ~$ ssh root@192.168.101.167 "mkdir /root/.ssh && tee -a /root/.ssh/authorized_keys" < ~/.ssh/id_rsa.pub
 ```
 
-To access the SD-WAN admin interface just browse to</br>
+To access the Micro Edge admin interface just browse to</br>
 `http://192.168.101.167/admin`
 
 

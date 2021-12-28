@@ -48,7 +48,7 @@ case $DEVICE in
   rpi3) DEVICE=rpi-3 ;;
 esac
 
-PACKAGES_FILE="sdwan-${DEVICE}-Packages_${FULL_VERSION}.txt"
+PACKAGES_FILE="mfw-${DEVICE}-Packages_${FULL_VERSION}.txt"
 
 [[ -z "$START_CLEAN" ]] || rm -fr $OUTPUT_DIR
 mkdir -p $OUTPUT_DIR
@@ -68,8 +68,8 @@ find bin/targets -iregex '.+\(gz\|img\|vdi\|vmdk\|bin\|kmod-mac80211-hwsi.+ipk\)
   newName=${newName/-sdcard}
   newName=${newName/-v7-emmc}
   newName=${newName/.bin/.img}
-  newName=${newName/mfw-/sdwan-}
-  newName=${newName/mfw_/sdwan-}
+  newName=${newName/mfw-/mfw-}
+  newName=${newName/mfw_/mfw-}
   cp $f ${OUTPUT_DIR}/$newName
 done
 
@@ -83,7 +83,7 @@ cp bin/packages/*/mfw/Packages ${OUTPUT_DIR}/${PACKAGES_FILE}
 
 # also push that list to s3 (Jenkins should have the necessary AWS_*
 # environment variables)
-s3path="s3://download.untangle.com/sdwan/${SHORT_VERSION}/manifest/${PACKAGES_FILE}"
+s3path="s3://download.untangle.com/mfw/${SHORT_VERSION}/manifest/${PACKAGES_FILE}"
 rc=1
 for i in $(seq 1 5) ; do
   if s3cmd put bin/packages/*/mfw/Packages $s3path ; then

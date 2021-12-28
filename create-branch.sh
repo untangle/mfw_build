@@ -4,7 +4,7 @@ set -e
 
 ## constants
 GIT_BASE_URL="git@github.com:untangle/"
-REPOSITORIES="bpfgen classd client-license-service mfw_admin mfw_build mfw_feeds mfw_schema mfw_ui nft_dict openwrt packetd reportd restd sync-settings ngfw_hades-pkgs"
+REPOSITORIES="bctid bpfgen classd client-license-service mfw_admin mfw_build mfw_feeds mfw_schema mfw_ui nft_dict openwrt packetd reportd restd sync-settings ngfw_hades-pkgs"
 
 ## functions
 help() {
