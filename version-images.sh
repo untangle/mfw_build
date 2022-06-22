@@ -8,22 +8,25 @@ export LC_ALL=${LC_ALL:-C}
 
 # CLI options
 usage() {
-  echo "$0 -d <device> -o <outputDir> [-c] [-t <timestamp>]"
+  echo "$0 -d <device> -o <outputDir> [-c] [-r <region>] [-t <timestamp>]"
   echo "  -c             : start by cleaning output directory"
   echo "  -d <device>    : which device"
+  echo "  -r <region>               : us, eu (defaults to us)"
   echo "  -o <outputDir> : where store the renamed images "
   echo "  -t <timestamp> : optional; defaults to $(date +"%Y%m%dT%H%M")"
 }
 
 DEVICE=""
+REGION="us"
 OUTPUT_DIR=""
 START_CLEAN=""
 TS=$(date +"%Y%m%dT%H%M")
-while getopts "hcd:o:t:" opt ; do
+while getopts "hcd:o:r:t:" opt ; do
   case "$opt" in
     c) START_CLEAN=1 ;;
     d) DEVICE="$OPTARG" ;;
     o) OUTPUT_DIR="$OPTARG" ;;
+    r) REGION="$OPTARG" ;;
     t) TS="$OPTARG" ;;
     h) usage ; exit 0 ;;
   esac
@@ -48,28 +51,21 @@ case $DEVICE in
   rpi3) DEVICE=rpi-3 ;;
 esac
 
-PACKAGES_FILE="mfw-${DEVICE}-Packages_${FULL_VERSION}.txt"
+PACKAGES_FILE="mfw_${REGION}_${DEVICE}-Packages_${FULL_VERSION}.txt"
 
 [[ -z "$START_CLEAN" ]] || rm -fr $OUTPUT_DIR
 mkdir -p $OUTPUT_DIR
 
 find bin/targets -iregex '.+\(gz\|img\|vdi\|vmdk\|bin\|kmod-mac80211-hwsi.+ipk\)' | grep -v Packages.gz | while read f ; do
   b=$(basename "$f")
+  # add our full version
   newName=${b/./_${FULL_VERSION}.}
-  newName=${newName/-brcm2708-bcm2710}
-  newName=${newName/-squashfs}
-  newName=${newName/-mvebu-cortexa9}
-  newName=${newName/-mvebu-cortexa53}
-  newName=${newName/-linksys}
-  newName=${newName/-turris}
-  newName=${newName/_turris}
-  newName=${newName/-globalscale}
-  newName=${newName/-cznic}
-  newName=${newName/-sdcard}
-  newName=${newName/-v7-emmc}
+  # remove extraneous informatio
+  newName=$(echo $newName | perl -pe 's/-(brcm2708-bcm2710|squashfs|-mvebu-cortexa\d+|linksys|turris|globalscale|cznic|sdcard|v7-emmc)//')
+  # rename *.bin (confusing to customers) to *.img
   newName=${newName/.bin/.img}
-  newName=${newName/mfw-/mfw-}
-  newName=${newName/mfw_/mfw-}
+  # add region name
+  newName=${newName/mfw-/mfw-${REGION}-}
   cp $f ${OUTPUT_DIR}/$newName
 done
 
