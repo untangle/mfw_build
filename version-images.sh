@@ -61,7 +61,7 @@ find bin/targets -iregex '.+\(gz\|img\|vdi\|vmdk\|bin\|kmod-mac80211-hwsi.+ipk\)
   # add our full version
   newName=${b/./_${FULL_VERSION}.}
   # remove extraneous informatio
-  newName=$(echo $newName | perl -pe 's/-(brcm2708-bcm2710|squashfs|-mvebu-cortexa\d+|linksys|turris|globalscale|cznic|sdcard|v7-emmc)//')
+  newName=$(echo $newName | perl -pe 's/-(brcm2708-bcm2710|squashfs|mvebu-cortexa\d+|linksys|turris|globalscale|cznic|sdcard|v7-emmc)//')
   # rename *.bin (confusing to customers) to *.img
   newName=${newName/.bin/.img}
   # add region name
