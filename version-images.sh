@@ -65,6 +65,7 @@ find bin/targets -iregex '.+\(gz\|img\|vdi\|vmdk\|bin\|kmod-mac80211-hwsi.+ipk\)
   # rename *.bin (confusing to customers) to *.img
   newName=${newName/.bin/.img}
   # add region name
+  newName=${newName/mfw_/mfw-}
   newName=${newName/mfw-/mfw-${REGION}-}
   cp $f ${OUTPUT_DIR}/$newName
 done
