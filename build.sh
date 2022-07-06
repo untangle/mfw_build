@@ -101,11 +101,10 @@ if [ -z "$NO_MFW_FEEDS" ]; then
   packages_feed=$(grep -P '^src-git packages' feeds.conf.default)
   perl -i -pe "s#^src-git packages .+#${packages_feed}#" feeds.conf
 
-  # install feeds
-  rm -fr {.,package}/feeds/mfw*
+  # setup feeds
+  ./scripts/feeds clean
   ./scripts/feeds update -a
-  ./scripts/feeds install -a -p packages
-  ./scripts/feeds install -a -f -p mfw
+  ./scripts/feeds install -a -f
 
   # create config file for MFW
   ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION >| .config
