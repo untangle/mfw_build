@@ -8,11 +8,12 @@ export LC_ALL=${LC_ALL:-C}
 
 # CLI options
 usage() {
-  echo "$0 -d <device> -o <outputDir> [-c] [-r <region>] [-t <timestamp>]"
+  echo "$0 -d <device> -o <outputDir> [-c] [-n] [-r <region>] [-t <timestamp>]"
   echo "  -c             : start by cleaning output directory"
   echo "  -d <device>    : which device"
+  echo "  -n             : do not upload manifests to s3"
   echo "  -r <region>               : us, eu (defaults to us)"
-  echo "  -o <outputDir> : where store the renamed images "
+  echo "  -o <outputDir> : where to store the renamed images "
   echo "  -t <timestamp> : optional; defaults to $(date +"%Y%m%dT%H%M")"
 }
 
@@ -20,11 +21,13 @@ DEVICE=""
 REGION="us"
 OUTPUT_DIR=""
 START_CLEAN=""
+UPLOAD_TO_S3="yes"
 TS=$(date +"%Y%m%dT%H%M")
-while getopts "hcd:o:r:t:" opt ; do
+while getopts "hcnd:o:r:t:" opt ; do
   case "$opt" in
     c) START_CLEAN=1 ;;
     d) DEVICE="$OPTARG" ;;
+    n) UPLOAD_TO_S3="" ;;
     o) OUTPUT_DIR="$OPTARG" ;;
     r) REGION="$OPTARG" ;;
     t) TS="$OPTARG" ;;
@@ -80,13 +83,15 @@ cp bin/packages/*/mfw/Packages ${OUTPUT_DIR}/${PACKAGES_FILE}
 
 # also push that list to s3 (Jenkins should have the necessary AWS_*
 # environment variables)
-s3path="s3://downloads.untangle.com-temp/mfw/${SHORT_VERSION}/manifest/${PACKAGES_FILE}"
-rc=1
-for i in $(seq 1 5) ; do
-  if s3cmd put bin/packages/*/mfw/Packages $s3path ; then
-    rc=0
-    break
-  fi
-done
+if [[ -n "$UPLOAD_TO_S3" ]] ; then
+  s3path="s3://downloads.untangle.com-temp/mfw/${SHORT_VERSION}/manifest/${PACKAGES_FILE}"
+  rc=1
+  for i in $(seq 1 5) ; do
+    if s3cmd put bin/packages/*/mfw/Packages $s3path ; then
+      rc=0
+      break
+    fi
+  done
+fi
 
 exit $rc
