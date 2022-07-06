@@ -75,6 +75,9 @@ fi
 
 rm -fr bin/targets
 
+# always clean grub2, as it doesn't build twice in a row
+rm -fr build_dir/target*/*/grub-pc
+
 # start clean only if explicitely requested
 case $START_CLEAN in
   false|0) : ;;
