@@ -151,9 +151,12 @@ fi
 # download
 make $MAKE_OPTIONS $VERSION_ASSIGN download
 
-# build
+# if the 1st build fails, try again with the same options (typically
+# -j32) before going with the super-inefficient -j1
 if ! make $MAKE_OPTIONS $VERSION_ASSIGN ; then
-  make -j1 V=s $VERSION_ASSIGN
+  if ! make $MAKE_OPTIONS $VERSION_ASSIGN ; then
+    make -j1 V=s $VERSION_ASSIGN
+  fi
 fi
 
 cleanup
