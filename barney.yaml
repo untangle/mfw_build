@@ -1,0 +1,27 @@
+# Copyright (c) 2022 Arista Networks, Inc.  All rights reserved.
+# Arista Networks, Inc. Confidential and Proprietary.
+
+images:
+  mfw-build:
+    units:
+    # Note that the version control here is poor.  In principle, this
+    # container image is used only for bootstrapping the Micro
+    # Firewall build, so hopefully new versions will be backwards
+    # compatible.  This image was pushed to docker.corp by John
+    # Sommerville and Ken Duda on 2022-07-26.
+    - image: barney.ci/docker%image/docker.corp.arista.io/untangle-mfw-build//latest
+    entry:
+      # The standard docker image runs /home/mfw/tools/build.sh by default.
+      # We don't want to do that in all cases, so override that here.
+      # Ideally, we'd override init to be "", but this doesn't work, because
+      # "" is equivalent to no override, so override to /usr/bin/env, which
+      # does nothing by default (e.g., exec["/usr/bin/env", "foo", "bar"] is
+      # almost the same as exec["foo", "bar"]).
+      init: "/usr/bin/env"
+
+  demo:
+    units:
+    - floor: .%mfw-build
+      build: |
+        echo "Hello, world!" > /dest/greeting
+        ls -l /home > /dest/mfw-file-list.txt
