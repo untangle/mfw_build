@@ -18,6 +18,8 @@ images:
       # does nothing by default (e.g., exec["/usr/bin/env", "foo", "bar"] is
       # almost the same as exec["foo", "bar"]).
       init: "/usr/bin/env"
+      mutables: [ "/root" ]
+      share-net: true
 
   demo:
     units:
@@ -25,3 +27,11 @@ images:
       build: |
         echo "Hello, world!" > /dest/greeting
         ls -l /home > /dest/mfw-file-list.txt
+        find /src > /dest/src-file-list.txt
+
+  build.sh:
+    units:
+    - floor: .%mfw-build
+      build: |
+        mount -o bind /src/code.arista.io/mfw/build /home/mfw/tools
+        /home/mfw/tools/build.sh
