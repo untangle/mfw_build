@@ -15,6 +15,7 @@ usage() {
   echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
   echo "  -l <libc>                 : musl, glibc (defaults to musl)"
   echo "  -m <make options>         : pass those to OpenWRT's make \"as is\" (default is -j32)"
+  echo "  -t <target>               : target to pass to OpenWRT's make (default is 'world'; can be 'toolchain/install')"
   echo "  -u                        : 'upstream' build, with no MFW feeds"
   echo "  -c true|false             : start clean or not (default is false, meaning \"do not start clean\""
   echo "  -r <region>               : us, eu (defaults to us)"
@@ -40,9 +41,10 @@ DEVICE="x86_64"
 LIBC="musl"
 VERSION="master"
 MAKE_OPTIONS="-j32"
+MAKE_TARGET="world"
 NO_MFW_FEEDS=""
 EXIT_ON_FIRST_FAILURE=""
-while getopts "uhec:r:d:l:v:m:" opt ; do
+while getopts "uhc:r:d:l:v:m:t:" opt ; do
   case "$opt" in
     c) START_CLEAN="$OPTARG" ;;
     r) REGION="$OPTARG" ;;
@@ -51,6 +53,7 @@ while getopts "uhec:r:d:l:v:m:" opt ; do
     l) LIBC="$OPTARG" ;;
     v) VERSION="$OPTARG" ;;
     m) MAKE_OPTIONS="$OPTARG" ;;
+    t) MAKE_TARGET="$OPTARG" ;;
     u) NO_MFW_FEEDS=1 ;;
     h) usage ; exit 0 ;;
   esac
@@ -65,7 +68,9 @@ source ${CURDIR}/common.sh
 # this is needed for private repositories (see MFW-877)
 mkdir -p ~/.ssh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
-ssh-add -l
+ssh-add -l || {
+    echo "build.sh: could not connect to ssh agent; crossing fingers and continuing..." 1>&2;
+}
 
 # set MFW_VERSION, or not; this looks convoluted, but ?= in Makefiles
 # doesn't work if the variable is defined but empty
@@ -98,6 +103,7 @@ echo $SOURCE_DATE_EPOCH >| ${VERSION_DATE_FILE}
 SOURCE_DATE=$(date -d @$SOURCE_DATE_EPOCH +%Y%m%dT%H%M)
 mkdir -p tmp
 echo $SOURCE_DATE >| tmp/${VERSION_DATE_FILE}
+
 
 if [ -z "$NO_MFW_FEEDS" ]; then
   # add MFW feed definitions
@@ -159,9 +165,9 @@ make $MAKE_OPTIONS $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
-if ! make $MAKE_OPTIONS $VERSION_ASSIGN && [ -z "$EXIT_ON_FIRST_FAILURE" ]; then
-  if ! make $MAKE_OPTIONS $VERSION_ASSIGN ; then
-    make -j1 V=s $VERSION_ASSIGN
+if ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET && [ -z "$EXIT_ON_FIRST_FAILURE" ]; then
+  if ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET; then
+    make -j1 V=s $VERSION_ASSIGN $MAKE_TARGET
   fi
 fi
 
