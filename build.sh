@@ -108,6 +108,7 @@ SOURCE_DATE=$(date -d @$SOURCE_DATE_EPOCH +%Y%m%dT%H%M)
 mkdir -p tmp
 echo $SOURCE_DATE >| tmp/${VERSION_DATE_FILE}
 
+
 if [ -z "$NO_MFW_FEEDS" ]; then
   # add MFW feed definitions
   cp ${CURDIR}/feeds.conf.mfw feeds.conf

@@ -18,20 +18,50 @@ images:
       # does nothing by default (e.g., exec["/usr/bin/env", "foo", "bar"] is
       # almost the same as exec["foo", "bar"]).
       init: "/usr/bin/env"
-      mutables: [ "/root" ]
+      mutables: [ "/root", "/home/mfw" ]
       share-net: true
+      env:
+        HOME: /root
 
   demo:
     units:
     - floor: .%mfw-build
       build: |
+        printenv > /dest/env
         echo "Hello, world!" > /dest/greeting
         ls -l /home > /dest/mfw-file-list.txt
         find /src > /dest/src-file-list.txt
 
-  build.sh:
+  toolchain:
     units:
+    - image: .%mfw-build
     - floor: .%mfw-build
+      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt, github.com/untangle/mfw_feeds ]
       build: |
         mount -o bind /src/code.arista.io/mfw/build /home/mfw/tools
-        /home/mfw/tools/build.sh
+        mount -o bind /src/github.com/untangle/openwrt /home/mfw/openwrt
+        mkdir -p /home/mfw/mfw_feeds
+        mount -o bind /src/github.com/untangle/mfw_feeds /home/mfw/mfw_feeds
+        cd /home/mfw/openwrt
+        git config --global user.email "barney@barney.ci"
+        git config --global user.name "Barney Build System"
+        git init
+        echo "Hello, world!" > greeting
+        git add greeting
+        git commit -m "A friendly greeting, with love, from Barney"
+        rm greeting
+        rm /src/github.com/untangle/mfw_feeds/configs/common/packages
+        exitcode=0
+        export MFW_FEEDS="src-link mfw /home/mfw/mfw_feeds"
+        # Barney sets DESTDIR to /dest, trying to be helpful.
+        # OpenWRT does not like that.  Some packages respect it, others don't, and boy,
+        # it gets confusing fast.
+        unset DESTDIR
+        if /home/mfw/tools/build.sh -t toolchain/install > /tmp/build-output 2>&1; then
+          mkdir -p /dest/home/mfw/openwrt/staging_dir
+          cp -a /home/mfw/openwrt/staging_dir/toolchain-x86_64_gcc-8.4.0_musl /dest/home/mfw/openwrt/staging_dir
+        else
+          exitcode=$?
+          echo "uh-oh, build failed (exit code $exitcode)"
+        fi
+        exit $exitcode
