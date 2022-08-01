@@ -87,7 +87,9 @@ case $START_CLEAN in
   false|0) : ;;
   *) [ -f .config ] || make defconfig
      make $MAKE_OPTIONS $VERSION_ASSIGN clean
-     rm -fr build_dir staging_dir ;;
+     rm -fr build_dir staging_dir 
+		 ./scripts/feeds clean
+		 ;;
 esac
 
 # set timestamp for files
@@ -109,7 +111,6 @@ if [ -z "$NO_MFW_FEEDS" ]; then
   perl -i -pe "s#^src-git packages .+#${packages_feed}#" feeds.conf
 
   # setup feeds
-  ./scripts/feeds clean
   ./scripts/feeds update -a
   ./scripts/feeds install -a -f
 
