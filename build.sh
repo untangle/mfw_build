@@ -116,6 +116,7 @@ if [ -z "$NO_MFW_FEEDS" ]; then
 
   # create config file for MFW
   ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION >| .config
+
 fi
 
 # config
@@ -131,6 +132,19 @@ CONFIG_VERSION_BUG_URL="https://jira.untangle.com/projects/MFW/"
 CONFIG_VERSION_HOME_URL="https://github.com/untangle/mfw_feeds"
 CONFIG_VERSION_SUPPORT_URL="https://support.untangle.com/hc/en-us/articles/360008238393"
 CONFIG_VERSION_PRODUCT="MFW"
+EOF
+
+# update for DPDK - this should be done as part of the package
+cat >> .config <<EOF
+CONFIG_VFIO_IOMMU_TYPE1=y
+CONFIG_VFIO_VIRQFD=y
+CONFIG_VFIO=y
+CONFIG_VFIO_NOIOMMU=y
+CONFIG_VFIO_PCI=y
+CONFIG_VFIO_PCI_MMAP=y
+CONFIG_HUGETLBFS=y
+CONFIG_HUGETLB_PAGE=y
+CONFIG_PROC_PAGE_MONITOR=y
 EOF
 
 # dynamic
