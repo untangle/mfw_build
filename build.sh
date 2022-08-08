@@ -136,6 +136,7 @@ EOF
 
 # update for DPDK - this should be done as part of the package
 cat >> .config <<EOF
+CONFIG_KERNEL_HUGETLB_PAGE=y
 CONFIG_VFIO_IOMMU_TYPE1=y
 CONFIG_VFIO_VIRQFD=y
 CONFIG_VFIO=y
@@ -145,6 +146,7 @@ CONFIG_VFIO_PCI_MMAP=y
 CONFIG_HUGETLBFS=y
 CONFIG_HUGETLB_PAGE=y
 CONFIG_PROC_PAGE_MONITOR=y
+CONFIG_PACKAGE_numactl=y
 EOF
 
 # dynamic
