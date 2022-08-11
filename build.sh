@@ -111,6 +111,9 @@ if [ -z "$NO_MFW_FEEDS" ]; then
 
   # create config file for MFW
   ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION >| .config
+
+  # Apply overrides for MFW into other feeds
+  ./feeds/mfw/configs/apply_overrides.sh
 fi
 
 # config
