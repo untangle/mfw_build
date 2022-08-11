@@ -18,6 +18,7 @@ usage() {
   echo "  -u                        : 'upstream' build, with no MFW feeds"
   echo "  -c true|false             : start clean or not (default is false, meaning \"do not start clean\""
   echo "  -r <region>               : us, eu (defaults to us)"
+  echo "  -e                        : exit on first build failure instead of retrying (default is to try 3 times)"
   echo "  -v release|<branch>|<tag> : version to build from (defaults to master)"
   echo "                              - 'release' is a special keyword meaning 'most recent tag from each"
   echo "                                package's source repository'"
@@ -40,10 +41,12 @@ LIBC="musl"
 VERSION="master"
 MAKE_OPTIONS="-j32"
 NO_MFW_FEEDS=""
-while getopts "uhc:r:d:l:v:m:" opt ; do
+EXIT_ON_FIRST_FAILURE=""
+while getopts "uhec:r:d:l:v:m:" opt ; do
   case "$opt" in
     c) START_CLEAN="$OPTARG" ;;
     r) REGION="$OPTARG" ;;
+    e) EXIT_ON_FIRST_FAILURE=1 ;;
     d) DEVICE="$OPTARG" ;;
     l) LIBC="$OPTARG" ;;
     v) VERSION="$OPTARG" ;;
@@ -156,7 +159,7 @@ make $MAKE_OPTIONS $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
-if ! make $MAKE_OPTIONS $VERSION_ASSIGN ; then
+if ! make $MAKE_OPTIONS $VERSION_ASSIGN && [ -z "$EXIT_ON_FIRST_FAILURE" ]; then
   if ! make $MAKE_OPTIONS $VERSION_ASSIGN ; then
     make -j1 V=s $VERSION_ASSIGN
   fi
