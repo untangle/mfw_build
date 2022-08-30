@@ -104,8 +104,8 @@ if [ -z "$NO_MFW_FEEDS" ]; then
   cp ${CURDIR}/feeds.conf.mfw feeds.conf
 
   # point to correct branch for packages
-  packages_feed=$(grep -P '^src-git packages' feeds.conf.default)
-  perl -i -pe "s#^src-git packages .+#${packages_feed}#" feeds.conf
+  packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
+  perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
   # setup feeds
   ./scripts/feeds clean
