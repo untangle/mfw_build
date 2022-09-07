@@ -7,10 +7,10 @@ src-git packages https://github.com/openwrt/packages.git;openwrt-21.02
 #src-git management https://github.com/openwrt-management/packages.git
 #src-git oldpackages http://git.openwrt.org/packages.git
 #src-link custom /usr/src/openwrt/custom-feed
-src-git mfw https://github.com/untangle/mfw_feeds.git;master
+#src-git mfw https://github.com/untangle/mfw_feeds.git;master
 
 # the next src-link entry can replace the above mfw definition, so you
 # can build against local feeds from a clone at $MFW_FEEDS, with a
 # call like:
 #   MFW_FEEDS=/home/seb/work/untangle/vcs/mfw_feeds docker-compose -f $mfw_b/docker-compose.build.yml run build [...]
-# src-link mfw /home/mfw/mfw_feeds
+src-link mfw /home/mfw/mfw_feeds
