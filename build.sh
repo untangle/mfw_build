@@ -81,10 +81,8 @@ else
   export MFW_VERSION="${VERSION}"
 fi
 
-rm -fr bin/targets
-
-# always clean grub2, as it doesn't build twice in a row
-rm -fr build_dir/target*/*/grub-pc
+# # always clean grub2, as it doesn't build twice in a row
+# rm -fr build_dir/target*/*/grub-pc
 
 # start clean only if explicitely requested
 case $START_CLEAN in
@@ -104,7 +102,6 @@ SOURCE_DATE=$(date -d @$SOURCE_DATE_EPOCH +%Y%m%dT%H%M)
 mkdir -p tmp
 echo $SOURCE_DATE >| tmp/${VERSION_DATE_FILE}
 
-
 if [ -z "$NO_MFW_FEEDS" ]; then
   # add MFW feed definitions
   cp ${CURDIR}/feeds.conf.mfw feeds.conf
@@ -114,7 +111,7 @@ if [ -z "$NO_MFW_FEEDS" ]; then
   perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
   # setup feeds
-  ./scripts/feeds clean
+  # ./scripts/feeds clean
   ./scripts/feeds update -a
   ./scripts/feeds install -a -f
 
