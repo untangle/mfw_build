@@ -11,7 +11,7 @@ export LC_ALL=${LC_ALL:-C}
 export TZ="America/Los_Angeles"
 
 usage() {
-  echo "Usage: $0 [-d <device>] [-l <libc>] [-v (latest|<branch>|<tag>)] [-c (false|true)] [-r <region>]"
+  echo "Usage: $0 [-d <device>] [-l <libc>] [-v (release|<branch>|<tag>)] [-c (false|true)] [-r <region>] [-u] [-e] [-t <target>] [-f <local_path>]"
   echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
   echo "  -l <libc>                 : musl, glibc (defaults to musl)"
   echo "  -m <make options>         : pass those to OpenWRT's make \"as is\" (default is -j32)"
@@ -19,6 +19,7 @@ usage() {
   echo "  -u                        : 'upstream' build, with no MFW feeds"
   echo "  -c true|false             : start clean or not (default is false, meaning \"do not start clean\""
   echo "  -r <region>               : us, eu (defaults to us)"
+  echo "  -f <local_path>           : use package sources in <local_path>/<forge>/<repo> instead of fetching from github (defaults to using github)"
   echo "  -e                        : exit on first build failure instead of retrying (default is to try 3 times)"
   echo "  -v release|<branch>|<tag> : version to build from (defaults to master)"
   echo "                              - 'release' is a special keyword meaning 'most recent tag from each"
@@ -43,11 +44,13 @@ VERSION="master"
 MAKE_OPTIONS="-j32"
 MAKE_TARGET="world"
 NO_MFW_FEEDS=""
+LOCAL_SOURCE_PATH=""
 EXIT_ON_FIRST_FAILURE=""
-while getopts "uhc:r:d:l:v:m:t:" opt ; do
+while getopts "uhec:r:d:l:v:m:t:f:" opt ; do
   case "$opt" in
     c) START_CLEAN="$OPTARG" ;;
     r) REGION="$OPTARG" ;;
+    f) export LOCAL_SOURCE_PATH="$OPTARG" ;;
     e) EXIT_ON_FIRST_FAILURE=1 ;;
     d) DEVICE="$OPTARG" ;;
     l) LIBC="$OPTARG" ;;
@@ -79,6 +82,9 @@ if [[ $VERSION == "release" ]] ; then
 else
   VERSION_ASSIGN="MFW_VERSION=${VERSION}"
   export MFW_VERSION="${VERSION}"
+  if [[ -n "$LOCAL_SOURCE_PATH" ]] ; then
+    VERSION_ASSIGN="$VERSION_ASSIGN LOCAL_SOURCE_PATH=${LOCAL_SOURCE_PATH}"
+  fi
 fi
 
 # # always clean grub2, as it doesn't build twice in a row
