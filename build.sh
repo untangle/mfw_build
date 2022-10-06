@@ -168,10 +168,14 @@ make $MAKE_OPTIONS $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
-if ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET && [ -z "$EXIT_ON_FIRST_FAILURE" ]; then
-  if ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET; then
-    make -j1 V=s $VERSION_ASSIGN $MAKE_TARGET
+rc=0
+make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET || rc=$?
+if [ $rc != 0 ] ; then
+  if [ -z "$EXIT_ON_FIRST_FAILURE" ] && ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET; then
+      make -j1 V=s $VERSION_ASSIGN $MAKE_TARGET
   fi
 fi
 
 cleanup
+
+exit $rc
