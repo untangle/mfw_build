@@ -174,6 +174,7 @@ if [ $rc != 0 ] ; then
   if [ -z "$EXIT_ON_FIRST_FAILURE" ] && ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET; then
       make -j1 V=s $VERSION_ASSIGN $MAKE_TARGET
   fi
+  rc=0
 fi
 
 cleanup
