@@ -58,8 +58,8 @@ images:
         # it gets confusing fast.
         unset DESTDIR
         if /home/mfw/tools/build.sh -t toolchain/install > /tmp/build-output 2>&1; then
-          mkdir -p /dest/home/mfw/openwrt/staging_dir
-          cp -a /home/mfw/openwrt/staging_dir/toolchain-x86_64_gcc-8.4.0_musl /dest/home/mfw/openwrt/staging_dir
+          mkdir -p /dest/home/mfw/openwrt
+          cp -a /home/mfw/openwrt/staging_dir /dest/home/mfw/openwrt/
         else
           exitcode=$?
           echo "uh-oh, build failed (exit code $exitcode)"
