@@ -51,6 +51,9 @@ images:
         # OpenWRT does not like that.  Some packages respect it, others don't, and boy,
         # it gets confusing fast.
         unset DESTDIR
+        echo CONFIG_TARGET_x86=y > .config
+        echo CONFIG_TARGET_x86_64=y >> .config
+        echo CONFIG_TARGET_x86_64_DEVICE_generic=y >> .config
         if /home/mfw/tools/build.sh -u -t toolchain/install > /tmp/build-output 2>&1; then
           mkdir -p /dest/home/mfw/openwrt
           cp -a /home/mfw/openwrt/staging_dir /dest/home/mfw/openwrt/
