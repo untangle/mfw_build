@@ -172,10 +172,14 @@ make $MAKE_OPTIONS $VERSION_ASSIGN download
 rc=0
 make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET || rc=$?
 if [ $rc != 0 ] ; then
-  if [ -z "$EXIT_ON_FIRST_FAILURE" ] && ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET; then
+  if [ -n "$EXIT_ON_FIRST_FAILURE" ] ; then
+    :
+  else # retry
+    if ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET; then
       make -j1 V=s $VERSION_ASSIGN $MAKE_TARGET
+    fi
+    rc=0
   fi
-  rc=0
 fi
 
 cleanup
