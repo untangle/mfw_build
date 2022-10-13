@@ -33,32 +33,26 @@ images:
         find /src > /dest/src-file-list.txt
 
   toolchain:
+    description: |
+      Build an x86_64 openwrt toolchain, and store the corresponding
+      staging_dir under /mfw-toolchain.
+      This directory can be then copied into the openwrt downstream
+      builds, by copying it back into the corresponding source tree.
     units:
     - image: .%mfw-build
     - floor: .%mfw-build
       sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
       build: |
-        mount -o bind /src/code.arista.io/mfw/build /home/mfw/tools
-        mount -o bind /src/github.com/untangle/openwrt /home/mfw/openwrt
-        cd /home/mfw/openwrt
-        git config --global user.email "barney@barney.ci"
-        git config --global user.name "Barney Build System"
-        git init
-        echo "Hello, world!" > greeting
-        git commit --allow-empty -m "A friendly greeting, with love, from Barney"
-        exitcode=0
-        # Barney sets DESTDIR to /dest, trying to be helpful.
-        # OpenWRT does not like that.  Some packages respect it, others don't, and boy,
-        # it gets confusing fast.
+        set -e
+        # barney sets DESTDIR to /dest, but this really confuses openwrt
         unset DESTDIR
+        # force x86_64 target
+        cd /src/github.com/untangle/openwrt
         echo CONFIG_TARGET_x86=y > .config
         echo CONFIG_TARGET_x86_64=y >> .config
         echo CONFIG_TARGET_x86_64_DEVICE_generic=y >> .config
-        if /home/mfw/tools/build.sh -u -t toolchain/install > /tmp/build-output 2>&1; then
-          mkdir -p /dest/home/mfw/openwrt
-          cp -a /home/mfw/openwrt/staging_dir /dest/home/mfw/openwrt/
-        else
-          exitcode=$?
-          echo "uh-oh, build failed (exit code $exitcode)"
-        fi
-        exit $exitcode
+        # build toolchain
+        /src/code.arista.io/mfw/build/build.sh -u -t toolchain/install
+        # store built toolchain
+        mkdir -p /dest/mfw-toolchain
+        cp -a staging_dir/ /dest/mfw-toolchain/
