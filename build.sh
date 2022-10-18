@@ -168,7 +168,7 @@ else
 fi
 
 # download
-make $MAKE_OPTIONS $VERSION_ASSIGN download
+make -j32 $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
