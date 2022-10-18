@@ -108,24 +108,27 @@ SOURCE_DATE=$(date -d @$SOURCE_DATE_EPOCH +%Y%m%dT%H%M)
 mkdir -p tmp
 echo $SOURCE_DATE >| tmp/${VERSION_DATE_FILE}
 
+# add our feeds definitions
+cp ${CURDIR}/feeds.conf.mfw feeds.conf
 
-if [ -z "$NO_MFW_FEEDS" ]; then
-  # add MFW feed definitions
-  cp ${CURDIR}/feeds.conf.mfw feeds.conf
+# point to correct branch for packages
+packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
+perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
-  # point to correct branch for packages
-  packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
-  perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
+if [ -n "$NO_MFW_FEEDS" ]; then # remove MFW feed entry
+  perl -i -ne "print unless m/mfw/" feeds.conf
+fi
 
-  # setup feeds
-  # ./scripts/feeds clean
-  ./scripts/feeds update -a
-  ./scripts/feeds install -a -f
+# setup feeds
+# ./scripts/feeds clean
+./scripts/feeds update -a
+./scripts/feeds install -a -f
 
+if [ -z "$NO_MFW_FEEDS" ] ; then
   # create config file for MFW
   ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION >| .config
 
-  # Apply overrides for MFW into other feeds
+  # apply overrides for MFW into other feeds
   ./feeds/mfw/configs/apply_overrides.sh
 fi
 
