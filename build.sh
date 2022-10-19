@@ -16,7 +16,7 @@ usage() {
   echo "  -l <libc>                 : musl, glibc (defaults to musl)"
   echo "  -m <make options>         : pass those to OpenWRT's make \"as is\" (default is -j32)"
   echo "  -t <target>               : target to pass to OpenWRT's make (default is 'world'; can be 'toolchain/install')"
-  echo "  -u                        : 'upstream' build, with no MFW feeds"
+  echo "  -u                        : 'upstream' build, with our general config but no MFW packages"
   echo "  -c true|false             : start clean or not (default is false, meaning \"do not start clean\""
   echo "  -r <region>               : us, eu (defaults to us)"
   echo "  -f <local_path>           : use package sources in <local_path>/<forge>/<repo> instead of fetching from github (defaults to using github)"
@@ -43,7 +43,7 @@ LIBC="musl"
 VERSION="master"
 MAKE_OPTIONS="-j32"
 MAKE_TARGET="world"
-NO_MFW_FEEDS=""
+NO_MFW_PACKAGES=""
 LOCAL_SOURCE_PATH=""
 EXIT_ON_FIRST_FAILURE=""
 while getopts "uhec:r:d:l:v:m:t:f:" opt ; do
@@ -57,7 +57,7 @@ while getopts "uhec:r:d:l:v:m:t:f:" opt ; do
     v) VERSION="$OPTARG" ;;
     m) MAKE_OPTIONS="$OPTARG" ;;
     t) MAKE_TARGET="$OPTARG" ;;
-    u) NO_MFW_FEEDS=1 ;;
+    u) NO_MFW_PACKAGES="-u" ;; # easily passable to configs/generate.sh
     h) usage ; exit 0 ;;
   esac
 done
@@ -115,22 +115,16 @@ cp ${CURDIR}/feeds.conf.mfw feeds.conf
 packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
 perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
-if [ -n "$NO_MFW_FEEDS" ]; then # remove MFW feed entry
-  perl -i -ne "print unless m/mfw/" feeds.conf
-fi
-
 # setup feeds
 # ./scripts/feeds clean
 ./scripts/feeds update -a
 ./scripts/feeds install -a -f
 
-if [ -z "$NO_MFW_FEEDS" ] ; then
-  # create config file for MFW
-  ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION >| .config
+# create config file for MFW
+./feeds/mfw/configs/generate.sh $NO_MFW_PACKAGES -d $DEVICE -l $LIBC -r $REGION >| .config
 
-  # apply overrides for MFW into other feeds
-  ./feeds/mfw/configs/apply_overrides.sh
-fi
+# apply overrides for MFW into other feeds
+./feeds/mfw/configs/apply_overrides.sh
 
 # config
 make defconfig
