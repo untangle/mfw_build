@@ -35,10 +35,6 @@ cleanup() {
   git checkout -- ${VERSION_FILE} ${VERSION_DATE_FILE} 2> /dev/null || true
 }
 
-apt update -q
-apt install -y libbpf-dev libelf-dev meson python3-pip
-pip3 install pyelftools
-
 # CLI options
 START_CLEAN="false"
 REGION="us"
@@ -99,9 +95,7 @@ case $START_CLEAN in
   false|0) : ;;
   *) [ -f .config ] || make defconfig
      make $MAKE_OPTIONS $VERSION_ASSIGN clean
-     rm -fr build_dir staging_dir 
-		 ./scripts/feeds clean
-		 ;;
+     rm -fr build_dir staging_dir ;;
 esac
 
 # set timestamp for files
@@ -211,6 +205,6 @@ if [ $rc != 0 ] ; then
   fi
 fi
 
-#cleanup
+cleanup
 
 exit $rc

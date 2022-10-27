@@ -14,7 +14,6 @@ services:
       - ${PWD}:/home/mfw/openwrt
       - ${MFW_FEEDS:-/tmp/mfw_feeds}:/home/mfw/mfw_feeds
       - ${SSH_AUTH_SOCK}:/ssh-agent
-    entrypoint: /bin/bash
 
   build-local-container:
     build:
