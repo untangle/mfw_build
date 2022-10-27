@@ -6,9 +6,7 @@ RUN echo 'APT::Install-Recommends "false";' > /etc/apt/apt.conf.d/no-recommends 
     echo 'APT::Install-Suggests "false";' >> /etc/apt/apt.conf.d/no-recommends
 
 RUN apt update -q
-RUN apt install -y build-essential curl file gawk gettext git libncurses-dev libssl-dev openssh-client python3 qemu-utils rsync
-RUN apt install -y ruby-sass swig time unzip wget zlib1g-dev libbpf-dev libelf-dev meson python3-pip
-RUN pip3 install pyelftools
+RUN apt install -y build-essential curl file gawk gettext git libncurses-dev libssl-dev openssh-client python3 qemu-utils rsync ruby-sass swig time unzip wget zlib1g-dev 
 
 RUN apt clean
 RUN rm -rf /var/lib/apt/lists/* /var/cache/apt-show-versions/*

@@ -35,6 +35,11 @@ cleanup() {
   git checkout -- ${VERSION_FILE} ${VERSION_DATE_FILE} 2> /dev/null || true
 }
 
+# DPDK build requirements
+apt update -q
+apt install -y libbpf-dev libelf-dev meson python3-pip
+pip3 install pyelftools
+
 # CLI options
 START_CLEAN="false"
 REGION="us"
