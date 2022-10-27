@@ -1,0 +1,82 @@
+# Copyright (c) 2022 Arista Networks, Inc.  All rights reserved.
+# Arista Networks, Inc. Confidential and Proprietary.
+
+images:
+  mfw-build:
+    units:
+    # Note that the version control here is poor.  In principle, this
+    # container image is used only for bootstrapping the Micro
+    # Firewall build, so hopefully new versions will be backwards
+    # compatible.  This image was pushed to docker.corp by John
+    # Sommerville and Ken Duda on 2022-07-26.
+    - image: barney.ci/docker%image/docker.corp.arista.io/untangle-mfw-build//latest
+    entry:
+      # The standard docker image runs /home/mfw/tools/build.sh by default.
+      # We don't want to do that in all cases, so override that here.
+      # Ideally, we'd override init to be "", but this doesn't work, because
+      # "" is equivalent to no override, so override to /usr/bin/env, which
+      # does nothing by default (e.g., exec["/usr/bin/env", "foo", "bar"] is
+      # almost the same as exec["foo", "bar"]).
+      init: "/usr/bin/env"
+      mutables: [ "/root", "/home/mfw" ]
+      share-net: true
+      env:
+        HOME: /root
+
+  demo:
+    units:
+    - floor: .%mfw-build
+      build: |
+        printenv > /dest/env
+        echo "Hello, world!" > /dest/greeting
+        ls -l /home > /dest/mfw-file-list.txt
+        find /src > /dest/src-file-list.txt
+
+  toolchain:
+    description: |
+      Build an x86_64 openwrt toolchain, and store the corresponding
+      staging_dir under /mfw-toolchain.
+      This directory can be then copied into the openwrt downstream
+      builds, by copying it back into the corresponding source tree.
+    units:
+    - image: .%mfw-build
+    - floor: .%mfw-build
+      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      build: |
+        set -e
+        # barney sets DESTDIR to /dest, but this really confuses openwrt
+        unset DESTDIR
+        # force x86_64 target
+        cd /src/github.com/untangle/openwrt
+        echo CONFIG_TARGET_x86=y > .config
+        echo CONFIG_TARGET_x86_64=y >> .config
+        echo CONFIG_TARGET_x86_64_DEVICE_generic=y >> .config
+        # build toolchain
+        /src/code.arista.io/mfw/build/build.sh -u -t toolchain/install
+        # store built toolchain
+        mkdir -p /dest/mfw-toolchain
+        cp -a staging_dir/ /dest/mfw-toolchain/
+
+  golang:
+    description: |
+      Build the golang compiler on top of the x86_64 openwrt toolchain.
+    units:
+    - image: .%toolchain
+    - floor: .%toolchain
+      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      build: |
+        set -e
+        # copy build%toolchain's staging_dir into our source tree
+        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+        # barney sets DESTDIR to /dest, but this really confuses openwrt
+        unset DESTDIR
+        # force x86_64 target
+        cd /src/github.com/untangle/openwrt
+        echo CONFIG_TARGET_x86=y > .config
+        echo CONFIG_TARGET_x86_64=y >> .config
+        echo CONFIG_TARGET_x86_64_DEVICE_generic=y >> .config
+        # build golan
+        /src/code.arista.io/mfw/build/build.sh -u -t package/feeds/packages/golang/host/compile
+        # store built toolchain
+        mkdir -p /dest/mfw-toolchain/staging_dir/
+        cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
