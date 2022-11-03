@@ -75,8 +75,31 @@ images:
         echo CONFIG_TARGET_x86=y > .config
         echo CONFIG_TARGET_x86_64=y >> .config
         echo CONFIG_TARGET_x86_64_DEVICE_generic=y >> .config
-        # build golan
+        # build golang
         /src/code.arista.io/mfw/build/build.sh -u -t package/feeds/packages/golang/host/compile
         # store built toolchain
         mkdir -p /dest/mfw-toolchain/staging_dir/
         cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
+
+  world:
+    units:
+    - floor: .%toolchain
+      sources:
+        - code.arista.io/mfw/build
+        - github.com/untangle/openwrt
+        - github.com/untangle/mfw_feeds
+      build: |
+        set -e
+        # copy build%toolchain's staging_dir into our source tree
+        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+        # use barney-supplied feeds instead of fetching from github
+        perl -i -pe 's|^src-git mfw .+|src-link mfw /src/github.com/untangle/mfw_feeds|' /src/code.arista.io/mfw/build/feeds.conf.mfw
+        # do not build vmware images
+        rm /src/github.com/untangle/mfw_feeds/configs/device/x86_64/vmware
+        # barney sets DESTDIR to /dest, but this really confuses openwrt
+        unset DESTDIR
+        # build our world image
+        cd /src/github.com/untangle/openwrt
+        /src/code.arista.io/mfw/build/build.sh -u
+        # extract FS content into destination image
+        tar -C /dest -xavf bin/targets/x86/64/mfw-x86-64-generic-rootfs.tar.gz 
