@@ -25,7 +25,7 @@ usage() {
   echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
   echo "                                in each package's source repository (mfw_admin, packetd, etc)"
 }
-TEMP=$(getopt -o d:l:m:uhc:r:v: --long device,libc,make-opts,upstream,clean,region,version,with-dpdk)
+TEMP=$(getopt -o d:l:m:uhc:r:v: --long device:,libc:,make-opts:,upstream,clean,region,version:,with-dpdk -- "$@")
 if [ $? != 0 ]
 then
     usage
@@ -52,12 +52,12 @@ NO_MFW_FEEDS=""
 WITH_DPDK=
 while true ; do
   case "$1" in
-    -c | --upstream ) START_CLEAN="$OPTARG"; shift 2;;
-    -r | --region ) REGION="$OPTARG"; shift 2;;
-    -d | --device ) DEVICE="$OPTARG"; shift 2 ;;
-    -l | --libc ) LIBC="$OPTARG"; shift 2 ;;
-    -v | --version ) VERSION="$OPTARG"; shift 2 ;;
-    -m | --make-opts ) MAKE_OPTIONS="$OPTARG"; shift 2 ;;
+    -c | --upstream ) START_CLEAN="$2"; shift 2;;
+    -r | --region ) REGION="$2"; shift 2;;
+    -d | --device ) DEVICE="$2"; shift 2 ;;
+    -l | --libc ) LIBC="$2"; shift 2 ;;
+    -v | --version ) VERSION="$2"; shift 2 ;;
+    -m | --make-opts ) MAKE_OPTIONS="$2"; shift 2 ;;
     -u | --upstream ) NO_MFW_FEEDS=1; shift ;;
     --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
     -h) usage ; exit 0 ;;
