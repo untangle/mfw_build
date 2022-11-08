@@ -12,20 +12,25 @@ export TZ="America/Los_Angeles"
 
 
 usage() {
-  echo "Usage: $0 [-d <device>] [-l <libc>] [-v (latest|<branch>|<tag>)] [-c (false|true)] [-r <region>]"
+  echo "Usage: $0 [-d <device>] [-l <libc>] [-v (release|<branch>|<tag>)] [-c (false|true)] [-r <region>] [-u] [-e] [-t <target>] [-f <local_path>]"
   echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
   echo "  -l <libc>                 : musl, glibc (defaults to musl)"
   echo "  -m <make options>         : pass those to OpenWRT's make \"as is\" (default is -j32)"
-  echo "  -u                        : 'upstream' build, with no MFW feeds"
+  echo "  -t <target>               : target to pass to OpenWRT's make (default is 'world'; can be 'toolchain/install')"
+  echo "  -u                        : 'upstream' build, with our general config but no MFW packages"
   echo "  -c true|false             : start clean or not (default is false, meaning \"do not start clean\""
   echo "  -r <region>               : us, eu (defaults to us)"
+  echo "  -f <local_path>           : use package sources in <local_path>/<forge>/<repo> instead of fetching from github (defaults to using github)"
+  echo "  -e                        : exit on first build failure instead of retrying (default is to try 3 times)"
   echo "  -v release|<branch>|<tag> : version to build from (defaults to master)"
   echo "                              - 'release' is a special keyword meaning 'most recent tag from each"
   echo "                                package's source repository'"
   echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
   echo "                                in each package's source repository (mfw_admin, packetd, etc)"
 }
-TEMP=$(getopt -o d:l:m:uhc:r:v: --long device:,libc:,make-opts:,upstream,clean,region,version:,with-dpdk -- "$@")
+TEMP=$(getopt -o d:l:m:uhc:r:v:
+       --long
+       device:,libc:,make-opts:,upstream,clean,region,version:,with-dpdk,exit-on-first-failure,make-target -- "$@")
 if [ $? != 0 ]
 then
     usage
@@ -48,17 +53,24 @@ DEVICE="x86_64"
 LIBC="musl"
 VERSION="master"
 MAKE_OPTIONS="-j"
-NO_MFW_FEEDS=""
 WITH_DPDK=
+MAKE_OPTIONS="-j32"
+MAKE_TARGET="world"
+NO_MFW_PACKAGES=""
+LOCAL_SOURCE_PATH=""
+EXIT_ON_FIRST_FAILURE=""
 while true ; do
   case "$1" in
-    -c | --upstream ) START_CLEAN="$2"; shift 2;;
+    -c | --clean ) START_CLEAN="$2"; shift 2;;
     -r | --region ) REGION="$2"; shift 2;;
+    -f | --local-source ) export LOCAL_SOURCE_PATH="$2"; shift 2 ;;
+    -e | --exit-on-first-failure) EXIT_ON_FIRST_FAILURE=1; shift ;;    
     -d | --device ) DEVICE="$2"; shift 2 ;;
     -l | --libc ) LIBC="$2"; shift 2 ;;
     -v | --version ) VERSION="$2"; shift 2 ;;
     -m | --make-opts ) MAKE_OPTIONS="$2"; shift 2 ;;
-    -u | --upstream ) NO_MFW_FEEDS=1; shift ;;
+    -t | --make-target ) MAKE_TARGET="$2"; shift 2;;
+    -u | --upstream) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh    
     --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
     -h) usage ; exit 0 ;;
     -- ) shift; break ;;
@@ -74,7 +86,9 @@ source ${CURDIR}/common.sh
 # this is needed for private repositories (see MFW-877)
 mkdir -p ~/.ssh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
-ssh-add -l
+ssh-add -l || {
+    echo "build.sh: could not connect to ssh agent; crossing fingers and continuing..." 1>&2;
+}
 
 # set MFW_VERSION, or not; this looks convoluted, but ?= in Makefiles
 # doesn't work if the variable is defined but empty
@@ -83,12 +97,13 @@ if [[ $VERSION == "release" ]] ; then
 else
   VERSION_ASSIGN="MFW_VERSION=${VERSION}"
   export MFW_VERSION="${VERSION}"
+  if [[ -n "$LOCAL_SOURCE_PATH" ]] ; then
+    VERSION_ASSIGN="$VERSION_ASSIGN LOCAL_SOURCE_PATH=${LOCAL_SOURCE_PATH}"
+  fi
 fi
 
-rm -fr bin/targets
-
-# always clean grub2, as it doesn't build twice in a row
-rm -fr build_dir/target*/*/grub-pc
+# # always clean grub2, as it doesn't build twice in a row
+# rm -fr build_dir/target*/*/grub-pc
 
 # start clean only if explicitely requested
 case $START_CLEAN in
@@ -108,22 +123,24 @@ SOURCE_DATE=$(date -d @$SOURCE_DATE_EPOCH +%Y%m%dT%H%M)
 mkdir -p tmp
 echo $SOURCE_DATE >| tmp/${VERSION_DATE_FILE}
 
-if [ -z "$NO_MFW_FEEDS" ]; then
-  # add MFW feed definitions
-  cp ${CURDIR}/feeds.conf.mfw feeds.conf
+# add our feeds definitions
+cp ${CURDIR}/feeds.conf.mfw feeds.conf
 
-  # point to correct branch for packages
-  packages_feed=$(grep -P '^src-git packages' feeds.conf.default)
-  perl -i -pe "s#^src-git packages .+#${packages_feed}#" feeds.conf
+# point to correct branch for packages
+packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
+perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
-  # setup feeds
-  ./scripts/feeds clean
-  ./scripts/feeds update -a
-  ./scripts/feeds install -a -f
+# setup feeds
+# ./scripts/feeds clean
+./scripts/feeds update -a
+./scripts/feeds install -a -f
 
-   # create config file for MFW
-   ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION $WITH_DPDK >| .config
-fi
+# create config file for MFW
+./feeds/mfw/configs/generate.sh $NO_MFW_PACKAGES -d $DEVICE -l $LIBC -r $REGION  $WITH_DPDK >| .config
+
+# apply overrides for MFW into other feeds
+./feeds/mfw/configs/apply_overrides.sh
+
 
 # config
 make defconfig
@@ -161,7 +178,7 @@ else
 fi
 
 # download
-make $MAKE_OPTIONS $VERSION_ASSIGN download
+make -j32 $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
