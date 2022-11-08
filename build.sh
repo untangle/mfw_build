@@ -52,15 +52,16 @@ NO_MFW_FEEDS=""
 WITH_DPDK=
 while true ; do
   case "$1" in
-    -c | --upstream ) START_CLEAN="$OPTARG" ;;
-    -r | --region ) REGION="$OPTARG" ;;
-    -d | --device ) DEVICE="$OPTARG" ;;
-    -l | --libc ) LIBC="$OPTARG" ;;
-    -v | --version ) VERSION="$OPTARG" ;;
-    -m | --make-opts ) MAKE_OPTIONS="$OPTARG" ;;
-    -u | --upstream ) NO_MFW_FEEDS=1 ;;
-    --with-dpdk ) WITH_DPDK=--with-dpdk ;;
+    -c | --upstream ) START_CLEAN="$OPTARG"; shift 2;;
+    -r | --region ) REGION="$OPTARG"; shift 2;;
+    -d | --device ) DEVICE="$OPTARG"; shift 2 ;;
+    -l | --libc ) LIBC="$OPTARG"; shift 2 ;;
+    -v | --version ) VERSION="$OPTARG"; shift 2 ;;
+    -m | --make-opts ) MAKE_OPTIONS="$OPTARG"; shift 2 ;;
+    -u | --upstream ) NO_MFW_FEEDS=1; shift ;;
+    --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
     -h) usage ; exit 0 ;;
+    -- ) shift; break ;;
   esac
 done
 
