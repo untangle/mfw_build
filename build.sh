@@ -10,6 +10,7 @@ export LC_ALL=${LC_ALL:-C}
 # one uses HQ timezone
 export TZ="America/Los_Angeles"
 
+
 usage() {
   echo "Usage: $0 [-d <device>] [-l <libc>] [-v (latest|<branch>|<tag>)] [-c (false|true)] [-r <region>]"
   echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
@@ -24,6 +25,14 @@ usage() {
   echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
   echo "                                in each package's source repository (mfw_admin, packetd, etc)"
 }
+TEMP=$(getopt -o d:l:m:uhc:r:v: --long device,libc,make-opts,upstream,clean,region,version,with-dpdk)
+if [ $? != 0 ]
+then
+    usage
+    exit 1
+fi
+
+eval set -- "$TEMP"
 
 # cleanup
 VERSION_DATE_FILE="version.date"
@@ -38,18 +47,20 @@ REGION="us"
 DEVICE="x86_64"
 LIBC="musl"
 VERSION="master"
-MAKE_OPTIONS="-j32"
+MAKE_OPTIONS="-j"
 NO_MFW_FEEDS=""
-while getopts "uhc:r:d:l:v:m:" opt ; do
-  case "$opt" in
-    c) START_CLEAN="$OPTARG" ;;
-    r) REGION="$OPTARG" ;;
-    d) DEVICE="$OPTARG" ;;
-    l) LIBC="$OPTARG" ;;
-    v) VERSION="$OPTARG" ;;
-    m) MAKE_OPTIONS="$OPTARG" ;;
-    u) NO_MFW_FEEDS=1 ;;
-    h) usage ; exit 0 ;;
+WITH_DPDK=
+while true ; do
+  case "$1" in
+    -c | --upstream ) START_CLEAN="$OPTARG" ;;
+    -r | --region ) REGION="$OPTARG" ;;
+    -d | --device ) DEVICE="$OPTARG" ;;
+    -l | --libc ) LIBC="$OPTARG" ;;
+    -v | --version ) VERSION="$OPTARG" ;;
+    -m | --make-opts ) MAKE_OPTIONS="$OPTARG" ;;
+    -u | --upstream ) NO_MFW_FEEDS=1 ;;
+    --with-dpdk ) WITH_DPDK=--with-dpdk ;;
+    -h) usage ; exit 0 ;;
   esac
 done
 
@@ -109,8 +120,8 @@ if [ -z "$NO_MFW_FEEDS" ]; then
   ./scripts/feeds update -a
   ./scripts/feeds install -a -f
 
-  # create config file for MFW
-  ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION >| .config
+   # create config file for MFW
+   ./feeds/mfw/configs/generate.sh -d $DEVICE -l $LIBC -r $REGION $WITH_DPDK >| .config
 fi
 
 # config
@@ -148,15 +159,12 @@ else
   echo CONFIG_VERSION_MANUFACTURER_URL="developer build" >> .config
 fi
 
+#$MAKE_OPTIONS
 # download
 make $MAKE_OPTIONS $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
-if ! make $MAKE_OPTIONS $VERSION_ASSIGN ; then
-  if ! make $MAKE_OPTIONS $VERSION_ASSIGN ; then
-    make -j1 V=s $VERSION_ASSIGN
-  fi
-fi
+make $MAKE_OPTIONS $VERSION_ASSIGN
 
 cleanup
