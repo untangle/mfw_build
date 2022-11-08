@@ -159,12 +159,24 @@ else
   echo CONFIG_VERSION_MANUFACTURER_URL="developer build" >> .config
 fi
 
-#$MAKE_OPTIONS
 # download
 make $MAKE_OPTIONS $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
-make $MAKE_OPTIONS $VERSION_ASSIGN
+rc=0
+make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET || rc=$?
+if [ $rc != 0 ] ; then
+  if [ -n "$EXIT_ON_FIRST_FAILURE" ] ; then
+    :
+  else # retry
+    if ! make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET; then
+      make -j1 V=s $VERSION_ASSIGN $MAKE_TARGET
+    fi
+    rc=0
+  fi
+fi
 
 cleanup
+
+exit $rc
