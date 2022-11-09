@@ -28,8 +28,8 @@ usage() {
   echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
   echo "                                in each package's source repository (mfw_admin, packetd, etc)"
 }
-TEMP=$(getopt -o d:l:m:uhc:r:v:
-       --long
+TEMP=$(getopt -o d:l:m:uhc:r:v:t:f: \
+       --long \
        device:,libc:,make-opts:,upstream,clean,region,version:,with-dpdk,exit-on-first-failure,make-target -- "$@")
 if [ $? != 0 ]
 then
@@ -102,8 +102,8 @@ else
   fi
 fi
 
-# # always clean grub2, as it doesn't build twice in a row
-# rm -fr build_dir/target*/*/grub-pc
+# always clean grub2, as it doesn't build twice in a row
+rm -fr build_dir/target*/*/grub-pc
 
 # start clean only if explicitely requested
 case $START_CLEAN in
@@ -131,7 +131,7 @@ packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
 perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
 # setup feeds
-# ./scripts/feeds clean
+./scripts/feeds clean
 ./scripts/feeds update -a
 ./scripts/feeds install -a -f
 
@@ -178,7 +178,7 @@ else
 fi
 
 # download
-make -j32 $VERSION_ASSIGN download
+# make $MAKE_OPTIONS $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
