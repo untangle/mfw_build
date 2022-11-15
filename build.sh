@@ -28,7 +28,7 @@ usage() {
   echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
   echo "                                in each package's source repository (mfw_admin, packetd, etc)"
 }
-TEMP=$(getopt -o d:l:m:uhc:r:v:t:f: \
+TEMP=$(getopt -o d:l:m:uehc:r:v:t:f: \
        --long \
        device:,libc:,make-opts:,upstream,clean,region,version:,with-dpdk,exit-on-first-failure,make-target -- "$@")
 if [ $? != 0 ]
