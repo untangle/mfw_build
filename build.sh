@@ -52,7 +52,6 @@ REGION="us"
 DEVICE="x86_64"
 LIBC="musl"
 VERSION="master"
-MAKE_OPTIONS="-j"
 WITH_DPDK=
 MAKE_OPTIONS="-j32"
 MAKE_TARGET="world"
