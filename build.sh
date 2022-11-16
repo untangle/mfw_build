@@ -63,13 +63,13 @@ while true ; do
     -c | --clean ) START_CLEAN="$2"; shift 2;;
     -r | --region ) REGION="$2"; shift 2;;
     -f | --local-source ) export LOCAL_SOURCE_PATH="$2"; shift 2 ;;
-    -e | --exit-on-first-failure) EXIT_ON_FIRST_FAILURE=1; shift ;;    
+    -e | --exit-on-first-failure) EXIT_ON_FIRST_FAILURE=1; shift ;;
     -d | --device ) DEVICE="$2"; shift 2 ;;
     -l | --libc ) LIBC="$2"; shift 2 ;;
     -v | --version ) VERSION="$2"; shift 2 ;;
     -m | --make-opts ) MAKE_OPTIONS="$2"; shift 2 ;;
     -t | --make-target ) MAKE_TARGET="$2"; shift 2;;
-    -u | --upstream) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh    
+    -u | --upstream) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh
     --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
     -h) usage ; exit 0 ;;
     -- ) shift; break ;;
@@ -101,9 +101,6 @@ else
   fi
 fi
 
-# always clean grub2, as it doesn't build twice in a row
-rm -fr build_dir/target*/*/grub-pc
-
 # start clean only if explicitely requested
 case $START_CLEAN in
   false|0) : ;;
@@ -130,7 +127,6 @@ packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
 perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
 # setup feeds
-./scripts/feeds clean
 ./scripts/feeds update -a
 ./scripts/feeds install -a -f
 
@@ -176,8 +172,8 @@ else
   echo CONFIG_VERSION_MANUFACTURER_URL="developer build" >> .config
 fi
 
-# download
-make $MAKE_OPTIONS $VERSION_ASSIGN download
+# download -- specifically using -j32 to speed up download.
+make -j32 $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
