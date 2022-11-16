@@ -10,6 +10,7 @@ export LC_ALL=${LC_ALL:-C}
 # one uses HQ timezone
 export TZ="America/Los_Angeles"
 
+
 usage() {
   echo "Usage: $0 [-d <device>] [-l <libc>] [-v (release|<branch>|<tag>)] [-c (false|true)] [-r <region>] [-u] [-e] [-t <target>] [-f <local_path>]"
   echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
@@ -27,6 +28,16 @@ usage() {
   echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
   echo "                                in each package's source repository (mfw_admin, packetd, etc)"
 }
+TEMP=$(getopt -o d:l:m:uehc:r:v:t:f: \
+       --long \
+       device:,libc:,make-opts:,upstream,clean,region,version:,with-dpdk,exit-on-first-failure,make-target -- "$@")
+if [ $? != 0 ]
+then
+    usage
+    exit 1
+fi
+
+eval set -- "$TEMP"
 
 # cleanup
 VERSION_DATE_FILE="version.date"
@@ -41,24 +52,27 @@ REGION="us"
 DEVICE="x86_64"
 LIBC="musl"
 VERSION="master"
+WITH_DPDK=
 MAKE_OPTIONS="-j32"
 MAKE_TARGET="world"
 NO_MFW_PACKAGES=""
 LOCAL_SOURCE_PATH=""
 EXIT_ON_FIRST_FAILURE=""
-while getopts "uhec:r:d:l:v:m:t:f:" opt ; do
-  case "$opt" in
-    c) START_CLEAN="$OPTARG" ;;
-    r) REGION="$OPTARG" ;;
-    f) export LOCAL_SOURCE_PATH="$OPTARG" ;;
-    e) EXIT_ON_FIRST_FAILURE=1 ;;
-    d) DEVICE="$OPTARG" ;;
-    l) LIBC="$OPTARG" ;;
-    v) VERSION="$OPTARG" ;;
-    m) MAKE_OPTIONS="$OPTARG" ;;
-    t) MAKE_TARGET="$OPTARG" ;;
-    u) NO_MFW_PACKAGES="-u" ;; # easily passable to configs/generate.sh
-    h) usage ; exit 0 ;;
+while true ; do
+  case "$1" in
+    -c | --clean ) START_CLEAN="$2"; shift 2;;
+    -r | --region ) REGION="$2"; shift 2;;
+    -f | --local-source ) export LOCAL_SOURCE_PATH="$2"; shift 2 ;;
+    -e | --exit-on-first-failure) EXIT_ON_FIRST_FAILURE=1; shift ;;
+    -d | --device ) DEVICE="$2"; shift 2 ;;
+    -l | --libc ) LIBC="$2"; shift 2 ;;
+    -v | --version ) VERSION="$2"; shift 2 ;;
+    -m | --make-opts ) MAKE_OPTIONS="$2"; shift 2 ;;
+    -t | --make-target ) MAKE_TARGET="$2"; shift 2;;
+    -u | --upstream) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh
+    --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
+    -h) usage ; exit 0 ;;
+    -- ) shift; break ;;
   esac
 done
 
@@ -87,9 +101,6 @@ else
   fi
 fi
 
-# # always clean grub2, as it doesn't build twice in a row
-# rm -fr build_dir/target*/*/grub-pc
-
 # start clean only if explicitely requested
 case $START_CLEAN in
   false|0) : ;;
@@ -116,15 +127,15 @@ packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
 perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
 # setup feeds
-# ./scripts/feeds clean
 ./scripts/feeds update -a
 ./scripts/feeds install -a -f
 
 # create config file for MFW
-./feeds/mfw/configs/generate.sh $NO_MFW_PACKAGES -d $DEVICE -l $LIBC -r $REGION >| .config
+./feeds/mfw/configs/generate.sh $NO_MFW_PACKAGES -d $DEVICE -l $LIBC -r $REGION  $WITH_DPDK >| .config
 
 # apply overrides for MFW into other feeds
 ./feeds/mfw/configs/apply_overrides.sh
+
 
 # config
 make defconfig
@@ -161,7 +172,7 @@ else
   echo CONFIG_VERSION_MANUFACTURER_URL="developer build" >> .config
 fi
 
-# download
+# download -- specifically using -j32 to speed up download.
 make -j32 $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
