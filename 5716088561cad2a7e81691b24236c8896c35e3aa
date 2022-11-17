@@ -5,9 +5,6 @@
   "barney.ci/debian": {
     "commit": "d9f33f3e3f084f8c713d004e5675b8da9d552212"
   },
-  "barney.ci/docker": {
-    "commit": "c5fe15c2ab204976843e33ef9365a0242f083fe1"
-  },
   "barney.ci/golang": {
     "commit": "5872d7025c8fff0e1928a9fb8f73a1b202c72a8b"
   },
