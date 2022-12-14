@@ -35,15 +35,16 @@ images:
       env:
         FORCE_UNSAFE_CONFIGURE: 1
         HOME: /root
-        
-  demo:
+
+  test/build-floor:
+    description: |
+      Check that we can run a couple of utilities
     units:
     - floor: .%build-floor
       build: |
-        printenv > /dest/env
-        echo "Hello, world!" > /dest/greeting
-        ls -l /home > /dest/mfw-file-list.txt
-        find /src > /dest/src-file-list.txt
+        curl --version
+        make --version
+        python3 --version
 
   toolchain:
     description: |
@@ -70,6 +71,14 @@ images:
         mkdir -p /dest/mfw-toolchain
         cp -a staging_dir/ /dest/mfw-toolchain/
 
+  test/toolchain:
+    description: |
+      Check that gcc can run
+    units:
+    - floor: .%toolchain
+      build: |
+        /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_musl/bin/x86_64-openwrt-linux-musl-gcc --version
+
   golang:
     description: |
       Build the golang compiler on top of the x86_64 openwrt toolchain.
@@ -94,7 +103,19 @@ images:
         mkdir -p /dest/mfw-toolchain/staging_dir/
         cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
 
+  test/golang:
+    description: |
+      Check that the golang compiler can run
+    units:
+    - floor: .%golang
+      build: |
+        /mfw-toolchain/staging_dir/hostpkg/bin/go version
+
   world:
+    description: |
+      Almost-vanilla openwrt image: we just use our kernel
+      patches+configuration, build the upstream packages we need, but we
+      don't build any of our packages from mfw_feeds
     units:
     - floor: .%toolchain
       sources:
@@ -116,3 +137,15 @@ images:
         /src/code.arista.io/mfw/build/build.sh -u
         # extract FS content into destination image
         tar -C /dest -xavf bin/targets/x86/64/mfw-x86-64-generic-rootfs.tar.gz 
+
+  test/world:
+    description: |
+      Check that some basic openwrt utilities can run
+    units:
+    - floor: .%world
+      build: |
+        ls
+        dig -v
+        jq --version
+        python3 --version
+
