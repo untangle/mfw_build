@@ -1,0 +1,10 @@
+reponame: code.arista.io/mfw/build
+description: |
+  MFW build utilities
+users:
+  maintainers:
+    - sdelafond@arista.com
+    - jsommerville@arista.com
+x-bar:
+  version: production
+epoch: 1
