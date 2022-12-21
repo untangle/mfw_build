@@ -105,23 +105,21 @@ images:
 
   world:
     description: |
-      Almost-vanilla openwrt image: we just use our kernel
-      patches+configuration, build the upstream packages we need, but we
-      don't build any of our packages from mfw_feeds
+      Almost-vanilla openwrt image, with just our kernel patches but no
+      additional configuration or packages.
+
+      This is mostly used as a testbed for installing packages, but it
+      does not qualify as a valid MFW base layer (see
+      code.arista.io/mfw/image%internal/mfw-base for that).
     units:
     - floor: .%toolchain
       sources:
         - code.arista.io/mfw/build
         - github.com/untangle/openwrt
-        - github.com/untangle/mfw_feeds
       build: |
         set -e
         # copy build%toolchain's staging_dir into our source tree
         cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
-        # use barney-supplied feeds instead of fetching from github
-        perl -i -pe 's|^src-git mfw .+|src-link mfw /src/github.com/untangle/mfw_feeds|' /src/code.arista.io/mfw/build/feeds.conf.mfw
-        # do not build vmware images
-        rm /src/github.com/untangle/mfw_feeds/configs/device/x86_64/vmware
         # barney sets DESTDIR to /dest, but this really confuses openwrt
         unset DESTDIR
         # build our world image
@@ -136,8 +134,6 @@ images:
     units:
     - floor: .%world
       build: |
+        date
         ls
-        dig -v
-        jq --version
-        python3 --version
-
+        ps
