@@ -17,7 +17,8 @@ usage() {
   echo "  -l <libc>                 : musl, glibc (defaults to musl)"
   echo "  -m <make options>         : pass those to OpenWRT's make \"as is\" (default is -j32)"
   echo "  -t <target>               : target to pass to OpenWRT's make (default is 'world'; can be 'toolchain/install')"
-  echo "  -u                        : 'upstream' build, with our general config but no MFW packages"
+  echo "  -n                        : do not include any packages from the MFW feeds"
+  echo "  -u                        : 'upstream' build targetting x86-64/musl, without any use of MFW feeds"
   echo "  -c true|false             : start clean or not (default is false, meaning \"do not start clean\""
   echo "  -r <region>               : us, eu (defaults to us)"
   echo "  -f <local_path>           : use package sources in <local_path>/<forge>/<repo> instead of fetching from github (defaults to using github)"
@@ -28,9 +29,9 @@ usage() {
   echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
   echo "                                in each package's source repository (mfw_admin, packetd, etc)"
 }
-TEMP=$(getopt -o d:l:m:uehc:r:v:t:f: \
+TEMP=$(getopt -o d:l:m:nuehc:r:v:t:f: \
        --long \
-       device:,libc:,make-opts:,upstream,clean,region,version:,with-dpdk,exit-on-first-failure,make-target -- "$@")
+       device:,libc:,make-opts:,no-mfw-packages,upstream,clean,region,version:,with-dpdk,exit-on-first-failure,make-target -- "$@")
 if [ $? != 0 ]
 then
     usage
@@ -55,6 +56,7 @@ VERSION="master"
 WITH_DPDK=
 MAKE_OPTIONS="-j32"
 MAKE_TARGET="world"
+NO_MFW_FEEDS=""
 NO_MFW_PACKAGES=""
 LOCAL_SOURCE_PATH=""
 EXIT_ON_FIRST_FAILURE=""
@@ -69,7 +71,8 @@ while true ; do
     -v | --version ) VERSION="$2"; shift 2 ;;
     -m | --make-opts ) MAKE_OPTIONS="$2"; shift 2 ;;
     -t | --make-target ) MAKE_TARGET="$2"; shift 2;;
-    -u | --upstream) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh
+    -u | --upstream) NO_MFW_FEEDS=1; shift ;;
+    -n | --no-mfw-packages) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh
     --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
     -h) usage ; exit 0 ;;
     -- ) shift; break ;;
@@ -127,15 +130,30 @@ packages_feed=$(grep -P '^src-git(-full)? packages' feeds.conf.default)
 perl -i -pe "s#^src-git(-full)? packages .+#${packages_feed}#" feeds.conf
 
 # setup feeds
+if [ -n "$NO_MFW_FEEDS" ]; then # remove MFW feed entry
+  perl -i -ne "print unless m/mfw/" feeds.conf
+fi
 ./scripts/feeds update -a
 ./scripts/feeds install -a -f
 
-# create config file for MFW
-./feeds/mfw/configs/generate.sh $NO_MFW_PACKAGES -d $DEVICE -l $LIBC -r $REGION  $WITH_DPDK >| .config
+if  [ -d ./feeds/mfw/configs ] ; then
+  # create config file for MFW
+  ./feeds/mfw/configs/generate.sh $NO_MFW_PACKAGES -d $DEVICE -l $LIBC -r $REGION $WITH_DPDK >| .config
 
-# apply overrides for MFW into other feeds
-./feeds/mfw/configs/apply_overrides.sh
-
+  # apply overrides for MFW into other feeds
+  ./feeds/mfw/configs/apply_overrides.sh
+else # x86_64/musl
+  cat >> .config <<EOF
+CONFIG_TARGET_x86=y
+CONFIG_TARGET_x86_64=y
+CONFIG_TARGET_x86_64_DEVICE_generic=y
+CONFIG_TARGET_SUFFIX="musl"
+CONFIG_LIBC="musl"
+"# CONFIG_USE_LIBSTDCXX is not set"
+CONFIG_USE_MUSL=y
+CONFIG_LIBC_USE_MUSL=y
+EOF
+fi
 
 # config
 make defconfig

@@ -60,12 +60,8 @@ images:
         set -e
         # barney sets DESTDIR to /dest, but this really confuses openwrt
         unset DESTDIR
-        # force x86_64 target
-        cd /src/github.com/untangle/openwrt
-        echo CONFIG_TARGET_x86=y > .config
-        echo CONFIG_TARGET_x86_64=y >> .config
-        echo CONFIG_TARGET_x86_64_DEVICE_generic=y >> .config
         # build toolchain
+        cd /src/github.com/untangle/openwrt
         /src/code.arista.io/mfw/build/build.sh -u -t toolchain/install
         # store built toolchain
         mkdir -p /dest/mfw-toolchain
@@ -92,14 +88,10 @@ images:
         cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
         # barney sets DESTDIR to /dest, but this really confuses openwrt
         unset DESTDIR
-        # force x86_64 target
-        cd /src/github.com/untangle/openwrt
-        echo CONFIG_TARGET_x86=y > .config
-        echo CONFIG_TARGET_x86_64=y >> .config
-        echo CONFIG_TARGET_x86_64_DEVICE_generic=y >> .config
         # build golang
+        cd /src/github.com/untangle/openwrt
         /src/code.arista.io/mfw/build/build.sh -u -t package/feeds/packages/golang/host/compile
-        # store built toolchain
+        # store built golang alongside existing toolchain
         mkdir -p /dest/mfw-toolchain/staging_dir/
         cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
 
