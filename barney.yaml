@@ -18,6 +18,7 @@ images:
       - git
       - libncurses-dev
       - libssl-dev
+      - meson
       - openssh-client
       - python3
       - python3-distutils-extra
@@ -44,6 +45,7 @@ images:
       build: |
         curl --version
         make --version
+        meson --version
         python3 --version
 
   toolchain:
