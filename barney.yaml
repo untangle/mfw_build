@@ -50,8 +50,8 @@ images:
 
   toolchain:
     description: |
-      Build an x86_64 openwrt toolchain, and store the corresponding
-      staging_dir under /mfw-toolchain.
+      Build an x86_64 openwrt toolchain for musl, and store the
+      corresponding staging_dir under /mfw-toolchain.
       This directory can be then copied into the openwrt downstream
       builds, by copying it back into the corresponding source tree.
     units:
@@ -76,6 +76,35 @@ images:
     - floor: .%toolchain
       build: |
         /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_musl/bin/x86_64-openwrt-linux-musl-gcc --version
+
+  toolchain-glibc:
+    description: |
+      Build an x86_64 openwrt toolchain for glibc, and store the
+      corresponding staging_dir under /mfw-toolchain.
+      This directory can be then copied into the openwrt downstream
+      builds, by copying it back into the corresponding source tree.
+    units:
+    - image: .%build-floor
+    - floor: .%build-floor
+      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      build: |
+        set -e
+        # barney sets DESTDIR to /dest, but this really confuses openwrt
+        unset DESTDIR
+        # build toolchain
+        cd /src/github.com/untangle/openwrt
+        /src/code.arista.io/mfw/build/build.sh -l glibc -u -t toolchain/install
+        # store built toolchain
+        mkdir -p /dest/mfw-toolchain
+        cp -a staging_dir/ /dest/mfw-toolchain/
+
+  test/toolchain-glibc:
+    description: |
+      Check that gcc can run
+    units:
+    - floor: .%toolchain-glibc
+      build: |
+        /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_glibc/bin/x86_64-openwrt-linux-gnu-gcc --version
 
   golang:
     description: |
