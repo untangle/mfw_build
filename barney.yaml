@@ -134,6 +134,36 @@ images:
       build: |
         /mfw-toolchain/staging_dir/hostpkg/bin/go version
 
+
+  golang-glibc:
+    description: |
+      Build the golang compiler on top of the x86_64 openwrt toolchain
+      for glibc.
+    units:
+    - image: .%toolchain-glibc
+    - floor: .%toolchain-glibc
+      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      build: |
+        set -e
+        # copy build%toolchain-glibc's staging_dir into our source tree
+        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+        # barney sets DESTDIR to /dest, but this really confuses openwrt
+        unset DESTDIR
+        # build golang
+        cd /src/github.com/untangle/openwrt
+        /src/code.arista.io/mfw/build/build.sh -l glibc -u -t package/feeds/packages/golang/host/compile
+        # store built golang alongside existing toolchain
+        mkdir -p /dest/mfw-toolchain/staging_dir/
+        cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
+
+  test/golang-glibc:
+    description: |
+      Check that the golang-glibc compiler can run
+    units:
+    - floor: .%golang-glibc
+      build: |
+        /mfw-toolchain/staging_dir/hostpkg/bin/go version
+
   world:
     description: |
       Almost-vanilla openwrt image, with just our kernel patches but no
