@@ -140,26 +140,41 @@ fi
 ./scripts/feeds update -a
 ./scripts/feeds install -a -f
 
-if  [ -d ./feeds/mfw/configs ] ; then
+if [ -d ./feeds/mfw/configs ] ; then
   # create config file for MFW
   ./feeds/mfw/configs/generate.sh $NO_MFW_PACKAGES -d $DEVICE -l $LIBC -r $REGION $WITH_DPDK >| .config
 
   # apply overrides for MFW into other feeds
   ./feeds/mfw/configs/apply_overrides.sh
-else # x86_64/musl
+else
   cat >> .config <<EOF
 CONFIG_TARGET_x86=y
 CONFIG_TARGET_x86_64=y
 CONFIG_TARGET_x86_64_DEVICE_generic=y
-CONFIG_TARGET_SUFFIX="musl"
-CONFIG_LIBC="musl"
 # CONFIG_USE_LIBSTDCXX is not set
-CONFIG_USE_MUSL=y
-CONFIG_LIBC_USE_MUSL=y
 # CONFIG_VDI_IMAGES is not set
 # CONFIG_VMDK_IMAGES is not set
 # CONFIG_ESXI_VMDK_IMAGES is not set
 EOF
+  if [ "$LIBC" = "musl" ] ; then
+    cat >> .config <<EOF
+CONFIG_TARGET_SUFFIX="musl"
+CONFIG_LIBC="musl"
+CONFIG_LIBC_USE_MUSL=y
+CONFIG_USE_MUSL=y
+EOF
+  else
+    cat >> .config <<EOF
+CONFIG_TARGET_SUFFIX="gnu"
+CONFIG_LIBC="glibc"
+CONFIG_DEVEL=y
+CONFIG_TOOLCHAINOPTS=y
+CONFIG_LIBC_USE_GLIBC=y
+CONFIG_USE_GLIBC=y
+# CONFIG_LIBC_USE_MUSL is not set
+# CONFIG_USE_MUSL is not set
+EOF
+  fi
 fi
 
 # config
