@@ -198,3 +198,38 @@ images:
         date
         ls
         ps
+
+  world-glibc:
+    description: |
+      Almost-vanilla glibc-based openwrt image, with just our kernel
+      patches but no additional configuration or packages.
+
+      This is mostly used as a testbed for installing packages, but it
+      does not qualify as a valid MFW base layer (see
+      code.arista.io/mfw/image%internal/mfw-base for that).
+    units:
+    - floor: .%toolchain-glibc
+      sources:
+        - code.arista.io/mfw/build
+        - github.com/untangle/openwrt
+      build: |
+        set -e
+        # copy build%toolchain's staging_dir into our source tree
+        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+        # barney sets DESTDIR to /dest, but this really confuses openwrt
+        unset DESTDIR
+        # build our world image
+        cd /src/github.com/untangle/openwrt
+        /src/code.arista.io/mfw/build/build.sh -l glibc -u
+        # extract FS content into destination image
+        tar -C /dest -xavf bin/targets/x86/64-glibc/mfw-x86-64-generic-rootfs.tar.gz
+
+  test/world-glibc:
+    description: |
+      Check that some basic openwrt utilities can run
+    units:
+    - floor: .%world-glibc
+      build: |
+        date
+        ls
+        ps
