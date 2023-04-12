@@ -30,3 +30,19 @@ services:
       - ${PWD}:/home/mfw/openwrt
       - ${MFW_FEEDS:-/tmp/mfw_feeds}:/home/mfw/mfw_feeds
       - ${SSH_AUTH_SOCK}:/ssh-agent
+
+  build-local-container-bullseye:
+    build:
+      context: .
+      dockerfile: Dockerfile.build.bullseye
+    env_file: pkg_source.env
+    environment:
+      BUILD_URL:
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
+      SSH_AUTH_SOCK: /ssh-agent
+    volumes:
+      - .:/home/mfw/tools
+      - ${PWD}:/home/mfw/openwrt
+      - ${MFW_FEEDS:-/tmp/mfw_feeds}:/home/mfw/mfw_feeds
+      - ${SSH_AUTH_SOCK}:/ssh-agent
