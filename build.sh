@@ -218,6 +218,13 @@ make -j32 $VERSION_ASSIGN download
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
 rc=0
+if [ $MAKE_TARGET = world ] ; then
+  # https://github.com/openwrt/openwrt/issues/10372
+  make buildinfo
+  make diffconfig buildversion feedsversion
+  make $MAKE_OPTIONS $VERSION_ASSIGN toolchain/install target/compile || rc=$?
+  make -j1 V=s package/kernel/button-hotplug/compile
+fi
 make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET || rc=$?
 if [ $rc != 0 ] ; then
   if [ -n "$EXIT_ON_FIRST_FAILURE" ] ; then
