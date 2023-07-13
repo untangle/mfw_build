@@ -13,25 +13,27 @@ export TZ="America/Los_Angeles"
 
 usage() {
   echo "Usage: $0 [-d <device>] [-l <libc>] [-v (release|<branch>|<tag>)] [-c (false|true)] [-r <region>] [-u] [-e] [-t <target>] [-f <local_path>]"
-  echo "  -d <device>               : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
-  echo "  -l <libc>                 : musl, glibc (defaults to musl)"
-  echo "  -m <make options>         : pass those to OpenWRT's make \"as is\" (default is -j32)"
-  echo "  -t <target>               : target to pass to OpenWRT's make (default is 'world'; can be 'toolchain/install')"
-  echo "  -n                        : do not include any packages from the MFW feeds"
-  echo "  -u                        : 'upstream' build targetting x86-64/musl, without any use of MFW feeds"
-  echo "  -c true|false             : start clean or not (default is false, meaning \"do not start clean\""
-  echo "  -r <region>               : us, eu (defaults to us)"
-  echo "  -f <local_path>           : use package sources in <local_path>/<forge>/<repo> instead of fetching from github (defaults to using github)"
-  echo "  -e                        : exit on first build failure instead of retrying (default is to try 3 times)"
-  echo "  -v release|<branch>|<tag> : version to build from (defaults to master)"
-  echo "                              - 'release' is a special keyword meaning 'most recent tag from each"
-  echo "                                package's source repository'"
-  echo "                              - <branch> or <tag> can be any valid git object as long as it exists"
-  echo "                                in each package's source repository (mfw_admin, packetd, etc)"
+  echo "  -d|--device <device>          : x86_64, omnia, wrt3200, wrt1900, wrt32x, espressobin, rpi3 (defaults to x86_64)"
+  echo "  -l|--libc <libc>              : musl, glibc (defaults to musl)"
+  echo "  -m|--make-opts <options>      : pass those to OpenWRT's make \"as is\" (default is -j32)"
+  echo "  -t|--make-target <target>     : target to pass to OpenWRT's make (default is 'world'; can be 'toolchain/install')"
+  echo "  -n|--no-mfw-packages          : do not include any packages from the MFW feeds"
+  echo "  -u|--upstream                 : 'upstream' build targetting x86-64/musl, without any use of MFW feeds"
+  echo "  -c|--clean true|false         : start clean or not (default is false, meaning \"do not start clean\""
+  echo "  -r|--region <region>          : us, eu (defaults to us)"
+  echo "  -f|--local-source <path>      : use package sources in <path>/<forge>/<repo> instead of fetching from github (defaults to using github)"
+  echo "  -e|--exit-on-first-failure    : exit on first build failure instead of retrying (default is to try 3 times)"
+  echo "  -s|--skip-build-kmod-first    : do not build kernel module first, which typically fails on 22.03 (default is false)"
+  echo "  -v|--version release|<commit> : version to build from (defaults to master)"
+  echo "                                  - 'release' is a special keyword meaning 'most recent tag from each"
+  echo "                                    package's source repository'"
+  echo "                                  - <commit> can be any valid git object as long as it exists"
+  echo "                                    in each package's source repository (mfw_admin, packetd, etc)"
+  echo "  --with-dpdk                   : include DPDK packages"
 }
-TEMP=$(getopt -o d:l:m:nuehc:r:v:t:f: \
+TEMP=$(getopt -o d:l:m:t:nuc:r:f:esv: \
        --long \
-       device:,libc:,make-opts:,no-mfw-packages,upstream,clean,region,version:,with-dpdk,exit-on-first-failure,make-target -- "$@")
+       device:,libc:,make-opts:,make-target:,no-mfw-packages,upstream,clean:,region:,local-source:,exit-on-first-failure,skip-build-mod-first,version:,with-dpdk -- "$@")
 if [ $? != 0 ]
 then
     usage
@@ -60,6 +62,7 @@ NO_MFW_FEEDS=""
 NO_MFW_PACKAGES=""
 LOCAL_SOURCE_PATH=""
 EXIT_ON_FIRST_FAILURE=""
+SKIP_BUILD_KMOD_FIRST=""
 while true ; do
   case "$1" in
     -c | --clean ) START_CLEAN="$2"; shift 2;;
@@ -73,6 +76,7 @@ while true ; do
     -t | --make-target ) MAKE_TARGET="$2"; shift 2;;
     -u | --upstream) NO_MFW_FEEDS=1; shift ;;
     -n | --no-mfw-packages) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh
+    -s | --skip-build-kmod-first) SKIP_BUILD_KMOD_FIRST="1"; shift ;;
     --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
     -h) usage ; exit 0 ;;
     -- ) shift; break ;;
@@ -218,13 +222,15 @@ make -j32 $VERSION_ASSIGN download
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
 rc=0
-if [ $MAKE_TARGET = world ] ; then
+
+if [ -z "$SKIP_BUILD_KMOD_FIRST" ] ; then
   # https://github.com/openwrt/openwrt/issues/10372
   make buildinfo
   make diffconfig buildversion feedsversion
   make $MAKE_OPTIONS $VERSION_ASSIGN toolchain/install target/compile || rc=$?
   make -j1 V=s package/kernel/button-hotplug/compile
 fi
+
 make $MAKE_OPTIONS $VERSION_ASSIGN $MAKE_TARGET || rc=$?
 if [ $rc != 0 ] ; then
   if [ -n "$EXIT_ON_FIRST_FAILURE" ] ; then
