@@ -5,6 +5,9 @@
   "barney.ci/alpine": {
     "commit": "d4b44ae28bbacb61652fd3433678fb964f4284ab"
   },
+  "barney.ci/barneyfile": {
+    "commit": "9aba11995ac456d27c2fdc6ad46647ae5eb6586c"
+  },
   "barney.ci/debian": {
     "commit": "5b0987ec7a205c49584ea3c5f2d268dd817a4dd4"
   },
