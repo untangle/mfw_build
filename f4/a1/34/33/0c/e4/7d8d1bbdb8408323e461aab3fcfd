@@ -12,7 +12,7 @@
     "commit": "5b0987ec7a205c49584ea3c5f2d268dd817a4dd4"
   },
   "barney.ci/golang": {
-    "commit": "e65a7b0113ce393b6250766401a421b1e00a1e1c"
+    "commit": "8ddeed6bfa8ad35eefa2840ca790275e8a8ce50b"
   },
   "github.com/golang/go": {
     "commit": "6018ad99a4a951581b2d846a8ccd6f1d4e74fd11"
