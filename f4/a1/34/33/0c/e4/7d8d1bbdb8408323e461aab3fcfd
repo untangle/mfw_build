@@ -14,6 +14,9 @@
   "barney.ci/golang": {
     "commit": "8ddeed6bfa8ad35eefa2840ca790275e8a8ce50b"
   },
+  "barney.ci/model": {
+    "commit": "e3779c8cf557a4fb108f07910304b8a1e5e43699"
+  },
   "github.com/golang/go": {
     "commit": "6018ad99a4a951581b2d846a8ccd6f1d4e74fd11"
   },
