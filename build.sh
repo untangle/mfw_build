@@ -198,6 +198,7 @@ mfwVersion="$(get_mfw_version)"
 mfwShortVersion="$(get_mfw_short_version)"
 echo CONFIG_VERSION_CODE="$openwrtVersion" >> .config
 echo CONFIG_VERSION_NUMBER="$mfwVersion" >> .config
+echo CONFIG_VERSION_REPO="https://downloads.openwrt.org/releases/$openwrtVersion" >> .config
 echo $mfwVersion >| $VERSION_FILE
 if [ -n "$BUILD_URL" ] ; then # Jenkins build
   # adjust device name to match exact OpenWrt specification
