@@ -48,10 +48,7 @@ SHORT_VERSION="$(get_openwrt_version)"
 FULL_VERSION="$(get_mfw_version)_${TS}"
 
 case $DEVICE in
-  wrt1900) DEVICE=wrt1900acs ;;
-  wrt3200) DEVICE=wrt3200acm ;;
   x86_64) DEVICE=x86-64 ;;
-  rpi3) DEVICE=rpi-3 ;;
 esac
 
 PACKAGES_FILE="mfw_${REGION}_${DEVICE}-Packages_${FULL_VERSION}.txt"
@@ -93,5 +90,9 @@ if [[ -n "$UPLOAD_TO_S3" ]] ; then
     fi
   done
 fi
+
+for f in ${OUTPUT_DIR}/* ; do
+  [[ "$f" =~ "$TS" ]] || rm "$f"
+done
 
 exit $rc
