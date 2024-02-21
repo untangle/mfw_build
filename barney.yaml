@@ -8,6 +8,8 @@ images:
     - image: barney.ci/debian%network
     finalizers:
     - - apt
+      - update
+    - - apt
       - install
       - -y
       - build-essential
