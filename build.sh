@@ -113,7 +113,7 @@ case $START_CLEAN in
   false|0) : ;;
   *) [ -f .config ] || make defconfig
      make $MAKE_OPTIONS $VERSION_ASSIGN clean
-     rm -fr build_dir staging_dir ;;
+     rm -fr build_dir package/feeds staging_dir ;;
 esac
 
 # set timestamp for files
@@ -138,7 +138,7 @@ if [ -n "$NO_MFW_FEEDS" ]; then # remove MFW feed entry
   perl -i -ne "print unless m/mfw/" feeds.conf
 fi
 ./scripts/feeds update -a
-./scripts/feeds install -a -f
+./scripts/feeds install -a -f -p mfw
 
 if [ -d ./feeds/mfw/configs ] ; then
   # create config file for MFW
