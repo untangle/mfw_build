@@ -139,6 +139,7 @@ if [ -n "$NO_MFW_FEEDS" ]; then # remove MFW feed entry
 fi
 ./scripts/feeds update -a
 ./scripts/feeds install -a -f -p mfw
+./scripts/feeds install -a packages
 
 if [ -d ./feeds/mfw/configs ] ; then
   # create config file for MFW
