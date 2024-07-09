@@ -12,15 +12,15 @@
     "commit": "5b0987ec7a205c49584ea3c5f2d268dd817a4dd4"
   },
   "barney.ci/golang": {
-    "commit": "fd7924d7bd05bbd7845c1117b38f35922e25f5b2"
+    "commit": "dd612eba506a1c084a80920c879586c5ca196f7a"
   },
   "barney.ci/model": {
-    "commit": "19ea63f27704b59941b731ccb110b27fce63718c"
+    "commit": "4c9e43fdb692806bb229313eac91f52e923bde96"
   },
   "github.com/golang/go": {
-    "commit": "adbfb672ba485630d75f8b5598228a63f4af08a4"
+    "commit": "8e1fdea8316d840fd07e9d6e026048e53290948b"
   },
   "github.com/untangle/openwrt": {
-    "commit": "38d756a426b2b8ee9c1c385bfc282a9f78538258"
+    "commit": "69eda95e879f022a1bf78226d8ed71f65bb01eab"
   }
 }
