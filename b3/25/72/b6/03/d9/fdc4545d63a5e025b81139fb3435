@@ -1,12 +1,13 @@
 {
   "": {
-    "commit": "b32572b603d9fdc4545d63a5e025b81139fb3435"
+    "commit": "b32572b603d9fdc4545d63a5e025b81139fb3435",
+    "url": "https://github.com/untangle/mfw_build.git"
   },
   "barney.ci/alpine": {
     "commit": "8725c311a245c7aadc4174cd9d851f655c657492"
   },
   "barney.ci/barneyfile": {
-    "commit": "963a03aa0fc5f96fbe785a7505c7876667015ce0"
+    "commit": "050155df69a2ebe02442c84aa36b8df8b1542eaa"
   },
   "barney.ci/debian": {
     "commit": "25ecf9fa9f56a467df833fa193fd77ba889d84d1"
