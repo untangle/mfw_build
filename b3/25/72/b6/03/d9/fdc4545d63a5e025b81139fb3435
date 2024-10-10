@@ -1,7 +1,6 @@
 {
   "": {
-    "commit": "b32572b603d9fdc4545d63a5e025b81139fb3435",
-    "url": "https://github.com/untangle/mfw_build.git"
+    "commit": "b32572b603d9fdc4545d63a5e025b81139fb3435"
   },
   "barney.ci/alpine": {
     "commit": "f2fa545e3fafa3387f2d7269721d16f3f499cc3b"
@@ -10,7 +9,7 @@
     "commit": "82d3f283869f1a32f81a5224c3382326dfa723c4"
   },
   "barney.ci/debian": {
-    "commit": "d73a1741c9e208f50284ce9b52d33ae608d67cd2"
+    "commit": "7967039d45be6fb3102a22cf4618b63db15c5918"
   },
   "barney.ci/golang": {
     "commit": "dd612eba506a1c084a80920c879586c5ca196f7a"
