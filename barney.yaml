@@ -4,34 +4,28 @@
 images:
   build-floor:
     units:
-    - image: barney.ci/debian%minbase
     - image: barney.ci/debian%network
-    finalizers:
-    - - apt
-      - update
-    - - apt
-      - install
-      - -y
-      - build-essential
-      - curl
-      - file
-      - gawk
-      - gettext
-      - git
-      - libncurses-dev
-      - libssl-dev
-      - meson
-      - openssh-client
-      - python3
-      - python3-distutils-extra
-      - qemu-utils
-      - rsync
-      - ruby-sass
-      - swig
-      - time
-      - unzip
-      - wget
-      - zlib1g-dev
+    - image: barney.ci/debian%pkg/build-essential
+    - image: barney.ci/debian%pkg/curl
+    - image: barney.ci/debian%pkg/file
+    - image: barney.ci/debian%pkg/gawk
+    - image: barney.ci/debian%pkg/gettext
+    - image: barney.ci/debian%pkg/git
+    - image: barney.ci/debian%pkg/libncurses-dev
+    - image: barney.ci/debian%pkg/libssl-dev
+    - image: barney.ci/debian%pkg/meson
+    - image: barney.ci/debian%pkg/openssh-client
+    - image: barney.ci/debian%pkg/perl-openssl-defaults
+    - image: barney.ci/debian%pkg/python3
+    - image: barney.ci/debian%pkg/python3-distutils-extra
+    - image: barney.ci/debian%pkg/qemu-utils
+    - image: barney.ci/debian%pkg/rsync
+    - image: barney.ci/debian%pkg/ruby-sass
+    - image: barney.ci/debian%pkg/swig
+    - image: barney.ci/debian%pkg/time
+    - image: barney.ci/debian%pkg/unzip
+    - image: barney.ci/debian%pkg/wget
+    - image: barney.ci/debian%pkg/zlib1g-dev
     entry:
       mutables:
         - /root
