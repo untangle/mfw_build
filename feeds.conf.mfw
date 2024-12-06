@@ -1,4 +1,4 @@
-src-git packages https://github.com/openwrt/packages.git;openwrt-21.02
+src-git packages https://github.com/untangle/packages.git;openwrt-21.02
 #src-git luci https://git.openwrt.org/project/luci.git
 #src-git routing https://git.openwrt.org/feed/routing.git
 #src-git telephony https://git.openwrt.org/feed/telephony.git
