@@ -34,6 +34,73 @@ users:
     - prashant.karunakaran@arista.com
     - sheck@arista.com
     - tkovalev@arista.com
+
+x-github-bridge:
+  # adding tests as separate entries for better visibility
+  reviews:
+    - image: test/build-floor
+      events:
+        - type: merge_group
+          branch-re: ^master$
+        - type: pull_request
+          branch-re: ^master$
+        - type: push
+          branch-re: ^master$
+
+    - image: test/toolchain
+      events:
+        - type: merge_group
+          branch-re: ^master$
+        - type: pull_request
+          branch-re: ^master$
+        - type: push
+          branch-re: ^master$
+
+    - image: test/toolchain-glibc
+      events:
+        - type: merge_group
+          branch-re: ^master$
+        - type: pull_request
+          branch-re: ^master$
+        - type: push
+          branch-re: ^master$
+
+    - image: test/golang
+      events:
+        - type: merge_group
+          branch-re: ^master$
+        - type: pull_request
+          branch-re: ^master$
+        - type: push
+          branch-re: ^master$
+
+    - image: test/golang-glibc
+      events:
+        - type: merge_group
+          branch-re: ^master$
+        - type: pull_request
+          branch-re: ^master$
+        - type: push
+          branch-re: ^master$
+
+    - image: test/world
+      events:
+        - type: merge_group
+          branch-re: ^master$
+        - type: pull_request
+          branch-re: ^master$
+        - type: push
+          branch-re: ^master$
+
+    - image: test/world-glibc
+      events:
+        - type: merge_group
+          branch-re: ^master$
+        - type: pull_request
+          branch-re: ^master$
+        - type: push
+          branch-re: ^master$
+
 x-bar:
   version: production
 epoch: 1
