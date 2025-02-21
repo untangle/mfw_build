@@ -98,4 +98,8 @@ x-github-bridge:
 
 x-bar:
   version: production
+
+ObsoleteNames:
+  - github.com/untangle/mfw_build
+
 epoch: 1
