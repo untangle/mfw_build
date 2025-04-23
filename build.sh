@@ -215,6 +215,7 @@ else
 fi
 
 # download -- specifically using -j32 to speed up download.
+VERSION_ASSIGN='mfw+owrt_23.05'
 make -j32 $VERSION_ASSIGN download
 
 # if the 1st build fails, try again with the same options (typically
