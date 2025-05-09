@@ -178,6 +178,10 @@ EOF
   fi
 fi
 
+#Expliclity enabling firewall3 for backward compatibility
+#Todo check if firewall4 can be used.
+sed -i '/CONFIG_.*firewall/d' .config && echo -e "# CONFIG_PACKAGE_firewall4 is not set\n# CONFIG_DEFAULT_firewall4 is not set\nCONFIG_PACKAGE_firewall=y\nCONFIG_DEFAULT_firewall=y" >> .config
+
 # config
 make defconfig
 
@@ -213,10 +217,6 @@ if [ -n "$BUILD_URL" ] ; then # Jenkins build
 else
   echo CONFIG_VERSION_MANUFACTURER_URL="developer build" >> .config
 fi
-
-#Expliclity enabling firewall3 for backward compatibility
-#Todo check if firewall4 can be used.
-sed -i '/CONFIG_.*firewall/d' .config && echo -e "# CONFIG_PACKAGE_firewall4 is not set\n# CONFIG_DEFAULT_firewall4 is not set\nCONFIG_PACKAGE_firewall=y\nCONFIG_DEFAULT_firewall=y" >> .config
 
 # download -- specifically using -j32 to speed up download.
 VERSION_ASSIGN='MFW_VERSION=mfw+owrt_23.05'
