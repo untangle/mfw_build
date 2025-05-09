@@ -108,31 +108,6 @@ else
   fi
 fi
 
-# Array of files and directories to remove
-cleanup_targets=(
-  "feeds/"
-  "staging_dir/"
-  "build_dir/"
-  "dl"
-  "feeds.conf"
-  ".config"
-  ".config.old"
-  "bin/"
-  "logs/"
-)
-
-# Iterate through the array
-for target in "${cleanup_targets[@]}"; do
-  # Check if the target exists
-  if [ -e "$target" ]; then
-    # Remove the target (directory or file)
-    echo "Removing: $target"
-    rm -rf "$target"
-  else
-    echo "Skipping: $target (does not exist)"
-  fi
-done
-
 echo "Cleanup complete."
 
 
@@ -249,7 +224,7 @@ fi
 # download -- specifically using -j32 to speed up download.
 VERSION_ASSIGN='MFW_VERSION=mfw+owrt_23.05'
 make -j32 $VERSION_ASSIGN download
-
+sleep 50000
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
 rc=0
