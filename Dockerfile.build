@@ -27,6 +27,7 @@ RUN apt install -y wget
 RUN apt install -y zlib1g-dev
 RUN apt install -y python3-distutils-extra
 RUN apt install -y meson
+RUN apt install -y libelf-dev
 RUN apt clean
 RUN rm -rf /var/lib/apt/lists/* /var/cache/apt-show-versions/*
 
