@@ -113,9 +113,10 @@ case $START_CLEAN in
   false|0) : ;;
   *) [ -f .config ] || make defconfig
      make $MAKE_OPTIONS $VERSION_ASSIGN clean
-     rm -fr build_dir package/feeds staging_dir feeds;;
+     rm -fr build_dir package/feeds staging_dir ;;
 esac
 
+sleep 10000
 # set timestamp for files
 SOURCE_DATE_EPOCH=$(date +"%s")
 echo $SOURCE_DATE_EPOCH >| ${VERSION_DATE_FILE}
