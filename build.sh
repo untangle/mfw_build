@@ -108,6 +108,33 @@ else
   fi
 fi
 
+# Array of files and directories to remove
+cleanup_targets=(
+  "feeds/"
+  "staging_dir/"
+  "build_dir/"
+  "dl"
+  "feeds.conf"
+  ".config"
+  ".config.old"
+  "bin/"
+  "logs/"
+)
+
+# Iterate through the array
+for target in "${cleanup_targets[@]}"; do
+  # Check if the target exists
+  if [ -e "$target" ]; then
+    # Remove the target (directory or file)
+    echo "Removing: $target"
+    rm -rf "$target"
+  else
+    echo "Skipping: $target (does not exist)"
+  fi
+done
+
+echo "Cleanup complete."
+
 # start clean only if explicitely requested
 case $START_CLEAN in
   false|0) : ;;
