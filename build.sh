@@ -113,7 +113,7 @@ case $START_CLEAN in
   false|0) : ;;
   *) [ -f .config ] || make defconfig
      make $MAKE_OPTIONS $VERSION_ASSIGN clean
-     rm -fr build_dir package/feeds staging_dir ;;
+     rm -fr build_dir package/feeds staging_dir feeds;;
 esac
 
 # set timestamp for files
