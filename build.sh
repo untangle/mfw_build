@@ -116,7 +116,7 @@ case $START_CLEAN in
      rm -fr build_dir package/feeds staging_dir ;;
 esac
 
-sleep 10000
+sleep 700
 # set timestamp for files
 SOURCE_DATE_EPOCH=$(date +"%s")
 echo $SOURCE_DATE_EPOCH >| ${VERSION_DATE_FILE}
