@@ -108,6 +108,7 @@ else
   fi
 fi
 
+if [[ "$START_CLEAN" == "true" ]]; then
 
 # Array of files and directories to remove
 cleanup_targets=(
@@ -133,9 +134,8 @@ for target in "${cleanup_targets[@]}"; do
     echo "Skipping: $target (does not exist)"
   fi
 done
-
 echo "Cleanup complete."
-
+fi
 
 
 # start clean only if explicitely requested
