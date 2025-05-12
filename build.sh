@@ -49,6 +49,7 @@ cleanup() {
 
 # CLI options
 START_CLEAN="false"
+FULL_CLEAN="false"
 REGION="us"
 DEVICE="x86_64"
 LIBC="musl"
@@ -74,6 +75,7 @@ while true ; do
     -u | --upstream) NO_MFW_FEEDS=1; shift ;;
     -n | --no-mfw-packages) NO_MFW_PACKAGES="-u"; shift ;; # easily passable to configs/generate.sh
     --with-dpdk ) WITH_DPDK=--with-dpdk; shift ;;
+    --full-clean ) FULL_CLEAN="$2"; shift 2 ;;
     -h) usage ; exit 0 ;;
     -- ) shift; break ;;
   esac
@@ -108,7 +110,7 @@ else
   fi
 fi
 
-if [[ "$START_CLEAN" == "true" ]]; then
+if [[ "$FULL_CLEAN" == "true" ]]; then
 
 # Array of files and directories to remove
 cleanup_targets=(
@@ -134,7 +136,8 @@ for target in "${cleanup_targets[@]}"; do
     echo "Skipping: $target (does not exist)"
   fi
 done
-echo "Cleanup complete."
+echo "Full Cleanup complete."
+
 fi
 
 
@@ -251,7 +254,6 @@ fi
 # download -- specifically using -j32 to speed up download.
 VERSION_ASSIGN='MFW_VERSION=mfw+owrt_23.05'
 make -j32 $VERSION_ASSIGN download
-sleep 500000
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
 rc=0
