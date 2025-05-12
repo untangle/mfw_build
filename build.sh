@@ -251,6 +251,7 @@ fi
 # download -- specifically using -j32 to speed up download.
 VERSION_ASSIGN='MFW_VERSION=mfw+owrt_23.05'
 make -j32 $VERSION_ASSIGN download
+sleep 500000
 # if the 1st build fails, try again with the same options (typically
 # -j32) before going with the super-inefficient -j1
 rc=0
