@@ -213,7 +213,7 @@ fi
 
 #Expliclity enabling firewall3 for backward compatibility
 #Todo check if firewall4 can be used.
-sed -i '/CONFIG_.*firewall/d' .config && echo -e "# CONFIG_PACKAGE_firewall4 is not set\n# CONFIG_DEFAULT_firewall4 is not set\nCONFIG_PACKAGE_firewall=y\nCONFIG_DEFAULT_firewall=y" >> .config
+sed -i '/CONFIG_.*firewall/d' .config && echo -e "# CONFIG_PACKAGE_firewall4 is not set\n# CONFIG_DEFAULT_firewall4 is not set" >> .config
 
 # config
 make defconfig
