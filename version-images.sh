@@ -81,7 +81,7 @@ cp bin/packages/*/mfw/Packages ${OUTPUT_DIR}/${PACKAGES_FILE}
 # also push that list to s3 (Jenkins should have the necessary AWS_*
 # environment variables)
 if [[ -n "$UPLOAD_TO_S3" ]] ; then
-  s3path="s3://downloads.untangle.com-temp/mfw/${SHORT_VERSION}/manifest/${PACKAGES_FILE}"
+  s3path="s3://downloads.edge.arista.com-temp/mfw/${SHORT_VERSION}/manifest/${PACKAGES_FILE}"
   rc=1
   for i in $(seq 1 5) ; do
     if s3cmd put bin/packages/*/mfw/Packages $s3path ; then
