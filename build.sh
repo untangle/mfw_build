@@ -187,7 +187,6 @@ make defconfig
 cat >> .config <<EOF
 CONFIG_VERSION_DIST="MFW"
 CONFIG_VERSION_MANUFACTURER="Untangle"
-CONFIG_VERSION_BUG_URL="https://jira.untangle.com/projects/MFW/"
 CONFIG_VERSION_HOME_URL="https://github.com/untangle/mfw_feeds"
 CONFIG_VERSION_SUPPORT_URL="https://support.edge.arista.com/hc/en-us/articles/360008238393"
 CONFIG_VERSION_PRODUCT="MFW"
