@@ -187,9 +187,8 @@ make defconfig
 cat >> .config <<EOF
 CONFIG_VERSION_DIST="MFW"
 CONFIG_VERSION_MANUFACTURER="Untangle"
-CONFIG_VERSION_BUG_URL="https://jira.untangle.com/projects/MFW/"
 CONFIG_VERSION_HOME_URL="https://github.com/untangle/mfw_feeds"
-CONFIG_VERSION_SUPPORT_URL="https://support.untangle.com/hc/en-us/articles/360008238393"
+CONFIG_VERSION_SUPPORT_URL="https://support.edge.arista.com/hc/en-us/articles/360008238393"
 CONFIG_VERSION_PRODUCT="MFW"
 EOF
 
@@ -209,7 +208,7 @@ if [ -n "$BUILD_URL" ] ; then # Jenkins build
     x86_64) DEVICE=x86-64 ;;
   esac
   packagesList="mfw-${DEVICE}-Packages_${mfwVersion}_${SOURCE_DATE}.txt"
-  echo CONFIG_VERSION_MANUFACTURER_URL="https://downloads.untangle.com/public/mfw/${mfwShortVersion}/manifest/${packagesList}" >> .config
+  echo CONFIG_VERSION_MANUFACTURER_URL="https://downloads.edge.arista.com/public/mfw/${mfwShortVersion}/manifest/${packagesList}" >> .config
 else
   echo CONFIG_VERSION_MANUFACTURER_URL="developer build" >> .config
 fi
