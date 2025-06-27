@@ -8,7 +8,7 @@
 			"commit": "885446e8547d808772bc59ed6fdbb9645a46ad59"
 		},
 		"barney.ci/debian": {
-			"commit": "eb84e7903cfd32bffe2b0ab068bc6c87aa810885"
+			"commit": "5d22942b5cf8172ed4dd1f795e7b96b32c3c9188"
 		},
 		"barney.ci/golang": {
 			"commit": "2988f6cf24e21ef39daf513a8116102f2b3e1d34"
