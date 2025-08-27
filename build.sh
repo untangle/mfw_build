@@ -97,7 +97,7 @@ ssh-add -l || {
 git config --global --list | grep -q "safe.directory=*" || git config --global --add safe.directory "*"
 
 # force feeds to use ssh, only in an env that knows about ssh-agent existing
-ssh-add -l && git config --global url.ssh://git@github.com/untangle/mfw_feeds.insteadOf https://github.com/untangle/mfw_feeds
+ssh-add -l && git config --global url.ssh://git@github.com/untangle.insteadOf https://github.com/untangle
 
 # set MFW_VERSION, or not; this looks convoluted, but ?= in Makefiles
 # doesn't work if the variable is defined but empty
