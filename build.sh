@@ -96,6 +96,9 @@ ssh-add -l || {
 # this probably isn't safe to run directly outside of a docker container
 git config --global --list | grep -q "safe.directory=*" || git config --global --add safe.directory "*"
 
+# force feeds to use ssh
+git config --global url.ssh://git@github.com/untangle.insteadOf https://github.com/untangle
+
 # set MFW_VERSION, or not; this looks convoluted, but ?= in Makefiles
 # doesn't work if the variable is defined but empty
 if [[ $VERSION == "release" ]] ; then
