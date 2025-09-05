@@ -38,6 +38,9 @@ images:
       Check that we can run a couple of utilities
     units:
     - floor: .%build-floor
+      quota:
+        memory: 100Mi
+        cpu: 1
       build: |
         curl --version
         make --version
@@ -54,6 +57,9 @@ images:
     - image: .%build-floor
     - floor: .%build-floor
       sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      quota:
+        memory: 17Gi
+        cpu: 9
       build: |
         set -e
         # barney sets DESTDIR to /dest, but this really confuses openwrt
@@ -70,6 +76,9 @@ images:
       Check that gcc can run
     units:
     - floor: .%toolchain
+      quota:
+        memory: 0.01Gi
+        cpu: 1
       build: |
         /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_musl/bin/x86_64-openwrt-linux-musl-gcc --version
 
@@ -83,6 +92,9 @@ images:
     - image: .%build-floor
     - floor: .%build-floor
       sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      quota:
+        memory: 19Gi
+        cpu: 9
       build: |
         set -e
         # barney sets DESTDIR to /dest, but this really confuses openwrt
@@ -99,6 +111,9 @@ images:
       Check that gcc can run
     units:
     - floor: .%toolchain-glibc
+      quota:
+        memory: 0.01Gi
+        cpu: 1
       build: |
         /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_glibc/bin/x86_64-openwrt-linux-gnu-gcc --version
 
@@ -109,6 +124,9 @@ images:
     - image: .%toolchain
     - floor: .%toolchain
       sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      quota:
+        memory: 7Gi
+        cpu: 2.5
       build: |
         set -e
         # copy build%toolchain's staging_dir into our source tree
@@ -127,6 +145,9 @@ images:
       Check that the golang compiler can run
     units:
     - floor: .%golang
+      quota:
+        memory: 0.03Gi
+        cpu: 1
       build: |
         /mfw-toolchain/staging_dir/hostpkg/bin/go version
 
@@ -139,6 +160,9 @@ images:
     - image: .%toolchain-glibc
     - floor: .%toolchain-glibc
       sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
+      quota:
+        memory: 7Gi
+        cpu: 2.5
       build: |
         set -e
         # copy build%toolchain-glibc's staging_dir into our source tree
@@ -157,6 +181,9 @@ images:
       Check that the golang-glibc compiler can run
     units:
     - floor: .%golang-glibc
+      quota:
+        memory: 0.02Gi
+        cpu: 1
       build: |
         /mfw-toolchain/staging_dir/hostpkg/bin/go version
 
@@ -173,6 +200,9 @@ images:
       sources:
         - code.arista.io/mfw/build
         - github.com/untangle/openwrt
+      quota:
+        memory: 19.5Gi
+        cpu: 8
       build: |
         set -e
         # copy build%toolchain's staging_dir into our source tree
@@ -190,6 +220,9 @@ images:
       Check that some basic openwrt utilities can run
     units:
     - floor: .%world
+      quota:
+        memory: 0.01Gi
+        cpu: 1
       build: |
         date
         ls
@@ -208,6 +241,9 @@ images:
       sources:
         - code.arista.io/mfw/build
         - github.com/untangle/openwrt
+      quota:
+        memory: 20Gi
+        cpu: 7
       build: |
         set -e
         # copy build%toolchain's staging_dir into our source tree
@@ -225,6 +261,9 @@ images:
       Check that some basic openwrt utilities can run
     units:
     - floor: .%world-glibc
+      quota:
+        memory: 0.01Gi
+        cpu: 1
       build: |
         date
         ls
@@ -253,6 +292,9 @@ images:
     - floor: .%tests/internal/renovate-json5-floor
       sources:
       - code.arista.io/mfw/build # to get sources under stable path
+      quota:
+        memory: 0.5Gi
+        cpu: 1.5
       build: |
         apt update
         apt install -y node-json5
