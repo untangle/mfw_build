@@ -4,28 +4,28 @@
 images:
   build-floor:
     units:
-    - image: barney.ci/debian%network
-    - image: barney.ci/debian%pkg/build-essential
-    - image: barney.ci/debian%pkg/curl
-    - image: barney.ci/debian%pkg/file
-    - image: barney.ci/debian%pkg/gawk
-    - image: barney.ci/debian%pkg/gettext
-    - image: barney.ci/debian%pkg/git
-    - image: barney.ci/debian%pkg/libncurses-dev
-    - image: barney.ci/debian%pkg/libssl-dev
-    - image: barney.ci/debian%pkg/meson
-    - image: barney.ci/debian%pkg/openssh-client
-    - image: barney.ci/debian%pkg/perl-openssl-defaults
-    - image: barney.ci/debian%pkg/python3
-    - image: barney.ci/debian%pkg/python3-distutils-extra
-    - image: barney.ci/debian%pkg/qemu-utils
-    - image: barney.ci/debian%pkg/rsync
-    - image: barney.ci/debian%pkg/ruby-sass
-    - image: barney.ci/debian%pkg/swig
-    - image: barney.ci/debian%pkg/time
-    - image: barney.ci/debian%pkg/unzip
-    - image: barney.ci/debian%pkg/wget
-    - image: barney.ci/debian%pkg/zlib1g-dev
+      - image: barney.ci/debian%network
+      - image: barney.ci/debian%pkg/build-essential
+      - image: barney.ci/debian%pkg/curl
+      - image: barney.ci/debian%pkg/file
+      - image: barney.ci/debian%pkg/gawk
+      - image: barney.ci/debian%pkg/gettext
+      - image: barney.ci/debian%pkg/git
+      - image: barney.ci/debian%pkg/libncurses-dev
+      - image: barney.ci/debian%pkg/libssl-dev
+      - image: barney.ci/debian%pkg/meson
+      - image: barney.ci/debian%pkg/openssh-client
+      - image: barney.ci/debian%pkg/perl-openssl-defaults
+      - image: barney.ci/debian%pkg/python3
+      - image: barney.ci/debian%pkg/python3-distutils-extra
+      - image: barney.ci/debian%pkg/qemu-utils
+      - image: barney.ci/debian%pkg/rsync
+      - image: barney.ci/debian%pkg/ruby-sass
+      - image: barney.ci/debian%pkg/swig
+      - image: barney.ci/debian%pkg/time
+      - image: barney.ci/debian%pkg/unzip
+      - image: barney.ci/debian%pkg/wget
+      - image: barney.ci/debian%pkg/zlib1g-dev
     entry:
       mutables:
         - /root
@@ -37,15 +37,15 @@ images:
     description: |
       Check that we can run a couple of utilities
     units:
-    - floor: .%build-floor
-      quota:
-        memory: 100Mi
-        cpu: 1
-      build: |
-        curl --version
-        make --version
-        meson --version
-        python3 --version
+      - floor: .%build-floor
+        quota:
+          memory: 100Mi
+          cpu: 1
+        build: |
+          curl --version
+          make --version
+          meson --version
+          python3 --version
 
   toolchain:
     description: |
@@ -54,33 +54,33 @@ images:
       This directory can be then copied into the openwrt downstream
       builds, by copying it back into the corresponding source tree.
     units:
-    - image: .%build-floor
-    - floor: .%build-floor
-      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
-      quota:
-        memory: 17Gi
-        cpu: 9
-      build: |
-        set -e
-        # barney sets DESTDIR to /dest, but this really confuses openwrt
-        unset DESTDIR
-        # build toolchain
-        cd /src/github.com/untangle/openwrt
-        /src/code.arista.io/mfw/build/build.sh -u -t toolchain/install
-        # store built toolchain
-        mkdir -p /dest/mfw-toolchain
-        cp -a staging_dir/ /dest/mfw-toolchain/
+      - image: .%build-floor
+      - floor: .%build-floor
+        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        quota:
+          memory: 17Gi
+          cpu: 9
+        build: |
+          set -e
+          # barney sets DESTDIR to /dest, but this really confuses openwrt
+          unset DESTDIR
+          # build toolchain
+          cd /src/github.com/untangle/openwrt
+          /src/code.arista.io/mfw/build/build.sh -u -t toolchain/install
+          # store built toolchain
+          mkdir -p /dest/mfw-toolchain
+          cp -a staging_dir/ /dest/mfw-toolchain/
 
   test/toolchain:
     description: |
       Check that gcc can run
     units:
-    - floor: .%toolchain
-      quota:
-        memory: 0.01Gi
-        cpu: 1
-      build: |
-        /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_musl/bin/x86_64-openwrt-linux-musl-gcc --version
+      - floor: .%toolchain
+        quota:
+          memory: 0.01Gi
+          cpu: 1
+        build: |
+          /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_musl/bin/x86_64-openwrt-linux-musl-gcc --version
 
   toolchain-glibc:
     description: |
@@ -89,103 +89,102 @@ images:
       This directory can be then copied into the openwrt downstream
       builds, by copying it back into the corresponding source tree.
     units:
-    - image: .%build-floor
-    - floor: .%build-floor
-      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
-      quota:
-        memory: 19Gi
-        cpu: 9
-      build: |
-        set -e
-        # barney sets DESTDIR to /dest, but this really confuses openwrt
-        unset DESTDIR
-        # build toolchain
-        cd /src/github.com/untangle/openwrt
-        /src/code.arista.io/mfw/build/build.sh -l glibc -u -t toolchain/install
-        # store built toolchain
-        mkdir -p /dest/mfw-toolchain
-        cp -a staging_dir/ /dest/mfw-toolchain/
+      - image: .%build-floor
+      - floor: .%build-floor
+        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        quota:
+          memory: 19Gi
+          cpu: 9
+        build: |
+          set -e
+          # barney sets DESTDIR to /dest, but this really confuses openwrt
+          unset DESTDIR
+          # build toolchain
+          cd /src/github.com/untangle/openwrt
+          /src/code.arista.io/mfw/build/build.sh -l glibc -u -t toolchain/install
+          # store built toolchain
+          mkdir -p /dest/mfw-toolchain
+          cp -a staging_dir/ /dest/mfw-toolchain/
 
   test/toolchain-glibc:
     description: |
       Check that gcc can run
     units:
-    - floor: .%toolchain-glibc
-      quota:
-        memory: 0.01Gi
-        cpu: 1
-      build: |
-        /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_glibc/bin/x86_64-openwrt-linux-gnu-gcc --version
+      - floor: .%toolchain-glibc
+        quota:
+          memory: 0.01Gi
+          cpu: 1
+        build: |
+          /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_glibc/bin/x86_64-openwrt-linux-gnu-gcc --version
 
   golang:
     description: |
       Build the golang compiler on top of the x86_64 openwrt toolchain.
     units:
-    - image: .%toolchain
-    - floor: .%toolchain
-      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
-      quota:
-        memory: 7Gi
-        cpu: 2.5
-      build: |
-        set -e
-        # copy build%toolchain's staging_dir into our source tree
-        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
-        # barney sets DESTDIR to /dest, but this really confuses openwrt
-        unset DESTDIR
-        # build golang
-        cd /src/github.com/untangle/openwrt
-        /src/code.arista.io/mfw/build/build.sh -u -t package/feeds/packages/golang/host/compile
-        # store built golang alongside existing toolchain
-        mkdir -p /dest/mfw-toolchain/staging_dir/
-        cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
+      - image: .%toolchain
+      - floor: .%toolchain
+        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        quota:
+          memory: 7Gi
+          cpu: 2.5
+        build: |
+          set -e
+          # copy build%toolchain's staging_dir into our source tree
+          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          # barney sets DESTDIR to /dest, but this really confuses openwrt
+          unset DESTDIR
+          # build golang
+          cd /src/github.com/untangle/openwrt
+          /src/code.arista.io/mfw/build/build.sh -u -t package/feeds/packages/golang/host/compile
+          # store built golang alongside existing toolchain
+          mkdir -p /dest/mfw-toolchain/staging_dir/
+          cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
 
   test/golang:
     description: |
       Check that the golang compiler can run
     units:
-    - floor: .%golang
-      quota:
-        memory: 0.03Gi
-        cpu: 1
-      build: |
-        /mfw-toolchain/staging_dir/hostpkg/bin/go version
-
+      - floor: .%golang
+        quota:
+          memory: 0.03Gi
+          cpu: 1
+        build: |
+          /mfw-toolchain/staging_dir/hostpkg/bin/go version
 
   golang-glibc:
     description: |
       Build the golang compiler on top of the x86_64 openwrt toolchain
       for glibc.
     units:
-    - image: .%toolchain-glibc
-    - floor: .%toolchain-glibc
-      sources: [ code.arista.io/mfw/build, github.com/untangle/openwrt ]
-      quota:
-        memory: 7Gi
-        cpu: 2.5
-      build: |
-        set -e
-        # copy build%toolchain-glibc's staging_dir into our source tree
-        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
-        # barney sets DESTDIR to /dest, but this really confuses openwrt
-        unset DESTDIR
-        # build golang
-        cd /src/github.com/untangle/openwrt
-        /src/code.arista.io/mfw/build/build.sh -l glibc -u -t package/feeds/packages/golang/host/compile
-        # store built golang alongside existing toolchain
-        mkdir -p /dest/mfw-toolchain/staging_dir/
-        cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
+      - image: .%toolchain-glibc
+      - floor: .%toolchain-glibc
+        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        quota:
+          memory: 7Gi
+          cpu: 2.5
+        build: |
+          set -e
+          # copy build%toolchain-glibc's staging_dir into our source tree
+          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          # barney sets DESTDIR to /dest, but this really confuses openwrt
+          unset DESTDIR
+          # build golang
+          cd /src/github.com/untangle/openwrt
+          /src/code.arista.io/mfw/build/build.sh -l glibc -u -t package/feeds/packages/golang/host/compile
+          # store built golang alongside existing toolchain
+          mkdir -p /dest/mfw-toolchain/staging_dir/
+          cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
 
   test/golang-glibc:
     description: |
       Check that the golang-glibc compiler can run
     units:
-    - floor: .%golang-glibc
-      quota:
-        memory: 0.02Gi
-        cpu: 1
-      build: |
-        /mfw-toolchain/staging_dir/hostpkg/bin/go version
+      - floor: .%golang-glibc
+        quota:
+          memory: 0.02Gi
+          cpu: 1
+        build: |
+          /mfw-toolchain/staging_dir/hostpkg/bin/go version
 
   world:
     description: |
@@ -196,37 +195,37 @@ images:
       does not qualify as a valid MFW base layer (see
       code.arista.io/mfw/image%internal/mfw-base for that).
     units:
-    - floor: .%toolchain
-      sources:
-        - code.arista.io/mfw/build
-        - github.com/untangle/openwrt
-      quota:
-        memory: 19.5Gi
-        cpu: 8
-      build: |
-        set -e
-        # copy build%toolchain's staging_dir into our source tree
-        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
-        # barney sets DESTDIR to /dest, but this really confuses openwrt
-        unset DESTDIR
-        # build our world image
-        cd /src/github.com/untangle/openwrt
-        /src/code.arista.io/mfw/build/build.sh -u
-        # extract FS content into destination image
-        tar -C /dest -xavf bin/targets/x86/64/mfw-x86-64-generic-rootfs.tar.gz 
+      - floor: .%toolchain
+        sources:
+          - code.arista.io/mfw/build
+          - github.com/untangle/openwrt
+        quota:
+          memory: 19.5Gi
+          cpu: 8
+        build: |
+          set -e
+          # copy build%toolchain's staging_dir into our source tree
+          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          # barney sets DESTDIR to /dest, but this really confuses openwrt
+          unset DESTDIR
+          # build our world image
+          cd /src/github.com/untangle/openwrt
+          /src/code.arista.io/mfw/build/build.sh -u
+          # extract FS content into destination image
+          tar -C /dest -xavf bin/targets/x86/64/mfw-x86-64-generic-rootfs.tar.gz
 
   test/world:
     description: |
       Check that some basic openwrt utilities can run
     units:
-    - floor: .%world
-      quota:
-        memory: 0.01Gi
-        cpu: 1
-      build: |
-        date
-        ls
-        ps
+      - floor: .%world
+        quota:
+          memory: 0.01Gi
+          cpu: 1
+        build: |
+          date
+          ls
+          ps
 
   world-glibc:
     description: |
@@ -237,37 +236,37 @@ images:
       does not qualify as a valid MFW base layer (see
       code.arista.io/mfw/image%internal/mfw-base for that).
     units:
-    - floor: .%toolchain-glibc
-      sources:
-        - code.arista.io/mfw/build
-        - github.com/untangle/openwrt
-      quota:
-        memory: 20Gi
-        cpu: 7
-      build: |
-        set -e
-        # copy build%toolchain's staging_dir into our source tree
-        cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
-        # barney sets DESTDIR to /dest, but this really confuses openwrt
-        unset DESTDIR
-        # build our world image
-        cd /src/github.com/untangle/openwrt
-        /src/code.arista.io/mfw/build/build.sh -l glibc -u
-        # extract FS content into destination image
-        tar -C /dest -xavf bin/targets/x86/64-glibc/mfw-x86-64-generic-rootfs.tar.gz
+      - floor: .%toolchain-glibc
+        sources:
+          - code.arista.io/mfw/build
+          - github.com/untangle/openwrt
+        quota:
+          memory: 20Gi
+          cpu: 7
+        build: |
+          set -e
+          # copy build%toolchain's staging_dir into our source tree
+          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          # barney sets DESTDIR to /dest, but this really confuses openwrt
+          unset DESTDIR
+          # build our world image
+          cd /src/github.com/untangle/openwrt
+          /src/code.arista.io/mfw/build/build.sh -l glibc -u
+          # extract FS content into destination image
+          tar -C /dest -xavf bin/targets/x86/64-glibc/mfw-x86-64-generic-rootfs.tar.gz
 
   test/world-glibc:
     description: |
       Check that some basic openwrt utilities can run
     units:
-    - floor: .%world-glibc
-      quota:
-        memory: 0.01Gi
-        cpu: 1
-      build: |
-        date
-        ls
-        ps
+      - floor: .%world-glibc
+        quota:
+          memory: 0.01Gi
+          cpu: 1
+        build: |
+          date
+          ls
+          ps
 
   ################
   #
@@ -284,18 +283,18 @@ images:
         - /var/lib    # for apt
         - /var/log    # for apt
     units:
-    - image: barney.ci/debian%minbase
-    - image: barney.ci/debian%network
+      - image: barney.ci/debian%minbase
+      - image: barney.ci/debian%network
 
   tests/renovate-json5:
     units:
-    - floor: .%tests/internal/renovate-json5-floor
-      sources:
-      - code.arista.io/mfw/build # to get sources under stable path
-      quota:
-        memory: 0.5Gi
-        cpu: 1.5
-      build: |
-        apt update
-        apt install -y node-json5
-        json5 --validate /src/code.arista.io/mfw/build/renovate.json5
+      - floor: .%tests/internal/renovate-json5-floor
+        sources:
+          - code.arista.io/mfw/build # to get sources under stable path
+        quota:
+          memory: 0.5Gi
+          cpu: 1.5
+        build: |
+          apt update
+          apt install -y node-json5
+          json5 --validate /src/code.arista.io/mfw/build/renovate.json5
