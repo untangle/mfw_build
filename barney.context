@@ -20,7 +20,7 @@
 			"commit": "56ebf80e57db9f61981fc0636fc6419dc6f68eda"
 		},
 		"github.com/untangle/openwrt": {
-			"commit": "755b0087dcc5c18c08d54b14c9dcc9f02c7a9f96"
+			"commit": "b8cbaadb4a303a8581c19f1fb813e4a53c439b08"
 		}
 	}
 }
