@@ -283,8 +283,8 @@ images:
         - /var/lib    # for apt
         - /var/log    # for apt
     units:
-      - image: barney.ci/debian%minbase
       - image: barney.ci/debian%network
+      - image: barney.ci/debian%pkg/node-json5
 
   tests/renovate-json5:
     units:
@@ -292,9 +292,7 @@ images:
         sources:
           - code.arista.io/mfw/build # to get sources under stable path
         quota:
-          memory: 0.5Gi
-          cpu: 1.5
+          memory: 25Mi
+          cpu: 1
         build: |
-          apt update
-          apt install -y node-json5
           json5 --validate /src/code.arista.io/mfw/build/renovate.json5
