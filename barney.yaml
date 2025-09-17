@@ -275,13 +275,6 @@ images:
   #########
 
   tests/internal/renovate-json5-floor:
-    entry:
-      mutables:
-        - /etc        # for error unable to clean up mess surrounding './etc/apache2' before installing another version: Read-only file system
-        - /usr        # for apt
-        - /var/cache  # for apt
-        - /var/lib    # for apt
-        - /var/log    # for apt
     units:
       - image: barney.ci/debian%network
       - image: barney.ci/debian%pkg/node-json5
