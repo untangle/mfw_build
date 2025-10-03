@@ -10,15 +10,6 @@
 		"barney.ci/debian": {
 			"commit": "51315e9c50df4de907f346bb881315dae06cf3b2"
 		},
-		"barney.ci/golang": {
-			"commit": "245e3e4dce004993d826c4b9f037409df2aa1580"
-		},
-		"barney.ci/model": {
-			"commit": "8472f4cbde05a6a532ce222d71c2f1978f33a391"
-		},
-		"github.com/golang/go": {
-			"commit": "56ebf80e57db9f61981fc0636fc6419dc6f68eda"
-		},
 		"github.com/untangle/openwrt": {
 			"commit": "cdb54e08fd037f41613e8e31d3d9dbbde4dd37e8"
 		}
