@@ -1,4 +1,4 @@
-reponame: code.arista.io/mfw/build
+reponame: code.arista.io/efw/build
 description: |
   MFW build utilities
 users:
@@ -111,5 +111,6 @@ x-bar:
 
 ObsoleteNames:
   - github.com/untangle/mfw_build
+  - code.arista.io/mfw/build
 
-epoch: 1
+epoch: 2
