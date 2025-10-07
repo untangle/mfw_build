@@ -56,7 +56,7 @@ images:
     units:
       - image: .%build-floor
       - floor: .%build-floor
-        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
         quota:
           memory: 17Gi
           cpu: 9
@@ -66,7 +66,7 @@ images:
           unset DESTDIR
           # build toolchain
           cd /src/github.com/untangle/openwrt
-          /src/code.arista.io/mfw/build/build.sh -u -t toolchain/install
+          /src/code.arista.io/efw/build/build.sh -u -t toolchain/install
           # store built toolchain
           mkdir -p /dest/mfw-toolchain
           cp -a staging_dir/ /dest/mfw-toolchain/
@@ -91,7 +91,7 @@ images:
     units:
       - image: .%build-floor
       - floor: .%build-floor
-        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
         quota:
           memory: 19Gi
           cpu: 9
@@ -101,7 +101,7 @@ images:
           unset DESTDIR
           # build toolchain
           cd /src/github.com/untangle/openwrt
-          /src/code.arista.io/mfw/build/build.sh -l glibc -u -t toolchain/install
+          /src/code.arista.io/efw/build/build.sh -l glibc -u -t toolchain/install
           # store built toolchain
           mkdir -p /dest/mfw-toolchain
           cp -a staging_dir/ /dest/mfw-toolchain/
@@ -123,7 +123,7 @@ images:
     units:
       - image: .%toolchain
       - floor: .%toolchain
-        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
         quota:
           memory: 7Gi
           cpu: 2.5
@@ -135,7 +135,7 @@ images:
           unset DESTDIR
           # build golang
           cd /src/github.com/untangle/openwrt
-          /src/code.arista.io/mfw/build/build.sh -u -t package/feeds/packages/golang/host/compile
+          /src/code.arista.io/efw/build/build.sh -u -t package/feeds/packages/golang/host/compile
           # store built golang alongside existing toolchain
           mkdir -p /dest/mfw-toolchain/staging_dir/
           cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
@@ -158,7 +158,7 @@ images:
     units:
       - image: .%toolchain-glibc
       - floor: .%toolchain-glibc
-        sources: [code.arista.io/mfw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
         quota:
           memory: 7Gi
           cpu: 2.5
@@ -170,7 +170,7 @@ images:
           unset DESTDIR
           # build golang
           cd /src/github.com/untangle/openwrt
-          /src/code.arista.io/mfw/build/build.sh -l glibc -u -t package/feeds/packages/golang/host/compile
+          /src/code.arista.io/efw/build/build.sh -l glibc -u -t package/feeds/packages/golang/host/compile
           # store built golang alongside existing toolchain
           mkdir -p /dest/mfw-toolchain/staging_dir/
           cp -a staging_dir/hostpkg /dest/mfw-toolchain/staging_dir/
@@ -193,11 +193,11 @@ images:
 
       This is mostly used as a testbed for installing packages, but it
       does not qualify as a valid MFW base layer (see
-      code.arista.io/mfw/image%internal/mfw-base for that).
+      code.arista.io/efw/image%internal/mfw-base for that).
     units:
       - floor: .%toolchain
         sources:
-          - code.arista.io/mfw/build
+          - code.arista.io/efw/build
           - github.com/untangle/openwrt
         quota:
           memory: 19.5Gi
@@ -210,7 +210,7 @@ images:
           unset DESTDIR
           # build our world image
           cd /src/github.com/untangle/openwrt
-          /src/code.arista.io/mfw/build/build.sh -u
+          /src/code.arista.io/efw/build/build.sh -u
           # extract FS content into destination image
           tar -C /dest -xavf bin/targets/x86/64/mfw-x86-64-generic-rootfs.tar.gz
 
@@ -234,11 +234,11 @@ images:
 
       This is mostly used as a testbed for installing packages, but it
       does not qualify as a valid MFW base layer (see
-      code.arista.io/mfw/image%internal/mfw-base for that).
+      code.arista.io/efw/image%internal/mfw-base for that).
     units:
       - floor: .%toolchain-glibc
         sources:
-          - code.arista.io/mfw/build
+          - code.arista.io/efw/build
           - github.com/untangle/openwrt
         quota:
           memory: 20Gi
@@ -251,7 +251,7 @@ images:
           unset DESTDIR
           # build our world image
           cd /src/github.com/untangle/openwrt
-          /src/code.arista.io/mfw/build/build.sh -l glibc -u
+          /src/code.arista.io/efw/build/build.sh -l glibc -u
           # extract FS content into destination image
           tar -C /dest -xavf bin/targets/x86/64-glibc/mfw-x86-64-generic-rootfs.tar.gz
 
@@ -283,9 +283,9 @@ images:
     units:
       - floor: .%tests/internal/renovate-json5-floor
         sources:
-          - code.arista.io/mfw/build # to get sources under stable path
+          - code.arista.io/efw/build # to get sources under stable path
         quota:
           memory: 500Mi
           cpu: 1
         build: |
-          json5 --validate /src/code.arista.io/mfw/build/renovate.json5
+          json5 --validate /src/code.arista.io/efw/build/renovate.json5
