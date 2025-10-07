@@ -56,7 +56,7 @@ images:
     units:
       - image: .%build-floor
       - floor: .%build-floor
-        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, code.arista.io/efw/openwrt]
         quota:
           memory: 17Gi
           cpu: 9
@@ -65,7 +65,7 @@ images:
           # barney sets DESTDIR to /dest, but this really confuses openwrt
           unset DESTDIR
           # build toolchain
-          cd /src/github.com/untangle/openwrt
+          cd /src/code.arista.io/efw/openwrt
           /src/code.arista.io/efw/build/build.sh -u -t toolchain/install
           # store built toolchain
           mkdir -p /dest/mfw-toolchain
@@ -91,7 +91,7 @@ images:
     units:
       - image: .%build-floor
       - floor: .%build-floor
-        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, code.arista.io/efw/openwrt]
         quota:
           memory: 19Gi
           cpu: 9
@@ -100,7 +100,7 @@ images:
           # barney sets DESTDIR to /dest, but this really confuses openwrt
           unset DESTDIR
           # build toolchain
-          cd /src/github.com/untangle/openwrt
+          cd /src/code.arista.io/efw/openwrt
           /src/code.arista.io/efw/build/build.sh -l glibc -u -t toolchain/install
           # store built toolchain
           mkdir -p /dest/mfw-toolchain
@@ -123,18 +123,18 @@ images:
     units:
       - image: .%toolchain
       - floor: .%toolchain
-        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, code.arista.io/efw/openwrt]
         quota:
           memory: 7Gi
           cpu: 2.5
         build: |
           set -e
           # copy build%toolchain's staging_dir into our source tree
-          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          cp -a /mfw-toolchain/staging_dir /src/code.arista.io/efw/openwrt/
           # barney sets DESTDIR to /dest, but this really confuses openwrt
           unset DESTDIR
           # build golang
-          cd /src/github.com/untangle/openwrt
+          cd /src/code.arista.io/efw/openwrt
           /src/code.arista.io/efw/build/build.sh -u -t package/feeds/packages/golang/host/compile
           # store built golang alongside existing toolchain
           mkdir -p /dest/mfw-toolchain/staging_dir/
@@ -158,18 +158,18 @@ images:
     units:
       - image: .%toolchain-glibc
       - floor: .%toolchain-glibc
-        sources: [code.arista.io/efw/build, github.com/untangle/openwrt]
+        sources: [code.arista.io/efw/build, code.arista.io/efw/openwrt]
         quota:
           memory: 7Gi
           cpu: 2.5
         build: |
           set -e
           # copy build%toolchain-glibc's staging_dir into our source tree
-          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          cp -a /mfw-toolchain/staging_dir /src/code.arista.io/efw/openwrt/
           # barney sets DESTDIR to /dest, but this really confuses openwrt
           unset DESTDIR
           # build golang
-          cd /src/github.com/untangle/openwrt
+          cd /src/code.arista.io/efw/openwrt
           /src/code.arista.io/efw/build/build.sh -l glibc -u -t package/feeds/packages/golang/host/compile
           # store built golang alongside existing toolchain
           mkdir -p /dest/mfw-toolchain/staging_dir/
@@ -198,18 +198,18 @@ images:
       - floor: .%toolchain
         sources:
           - code.arista.io/efw/build
-          - github.com/untangle/openwrt
+          - code.arista.io/efw/openwrt
         quota:
           memory: 19.5Gi
           cpu: 8
         build: |
           set -e
           # copy build%toolchain's staging_dir into our source tree
-          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          cp -a /mfw-toolchain/staging_dir /src/code.arista.io/efw/openwrt/
           # barney sets DESTDIR to /dest, but this really confuses openwrt
           unset DESTDIR
           # build our world image
-          cd /src/github.com/untangle/openwrt
+          cd /src/code.arista.io/efw/openwrt
           /src/code.arista.io/efw/build/build.sh -u
           # extract FS content into destination image
           tar -C /dest -xavf bin/targets/x86/64/mfw-x86-64-generic-rootfs.tar.gz
@@ -239,18 +239,18 @@ images:
       - floor: .%toolchain-glibc
         sources:
           - code.arista.io/efw/build
-          - github.com/untangle/openwrt
+          - code.arista.io/efw/openwrt
         quota:
           memory: 20Gi
           cpu: 7
         build: |
           set -e
           # copy build%toolchain's staging_dir into our source tree
-          cp -a /mfw-toolchain/staging_dir /src/github.com/untangle/openwrt/
+          cp -a /mfw-toolchain/staging_dir /src/code.arista.io/efw/openwrt/
           # barney sets DESTDIR to /dest, but this really confuses openwrt
           unset DESTDIR
           # build our world image
-          cd /src/github.com/untangle/openwrt
+          cd /src/code.arista.io/efw/openwrt
           /src/code.arista.io/efw/build/build.sh -l glibc -u
           # extract FS content into destination image
           tar -C /dest -xavf bin/targets/x86/64-glibc/mfw-x86-64-generic-rootfs.tar.gz

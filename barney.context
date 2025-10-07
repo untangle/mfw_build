@@ -10,8 +10,8 @@
 		"barney.ci/debian": {
 			"commit": "a3a96ffe615e6c3e132ea4a6c8819213b471e56a"
 		},
-		"github.com/untangle/openwrt": {
-			"commit": "cdb54e08fd037f41613e8e31d3d9dbbde4dd37e8"
+		"code.arista.io/efw/openwrt": {
+			"commit": "078f5a80b3cf83b88f1418be664dcbf459b118d3"
 		}
 	}
 }
