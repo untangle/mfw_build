@@ -1,0 +1,107 @@
+---
+- job:
+    name: efw__build__test-build-floor
+    description: "efw/build: Test build-floor image"
+    parent: barney-test
+    success-message: efw/build build-floor test passed ☺️
+    failure-message: efw/build build-floor test failed 🧐, review the job output
+    tags:
+      - efw
+    vars:
+      b5_image_name: test/build-floor
+
+- job:
+    name: efw__build__test-toolchain
+    description: "efw/build: Test toolchain image"
+    parent: barney-test
+    success-message: efw/build toolchain test passed ☺️
+    failure-message: efw/build toolchain test failed 🧐, review the job output
+    tags:
+      - efw
+    vars:
+      b5_image_name: test/toolchain
+
+- job:
+    name: efw__build__test-toolchain-glibc
+    description: "efw/build: Test toolchain-glibc image"
+    parent: barney-test
+    success-message: efw/build toolchain-glibc test passed ☺️
+    failure-message: efw/build toolchain-glibc test failed 🧐, review the job output
+    tags:
+      - efw
+    vars:
+      b5_image_name: test/toolchain-glibc
+
+- job:
+    name: efw__build__test-golang
+    description: "efw/build: Test golang image"
+    parent: barney-test
+    success-message: efw/build golang test passed ☺️
+    failure-message: efw/build golang test failed 🧐, review the job output
+    tags:
+      - efw
+    vars:
+      b5_image_name: test/golang
+
+- job:
+    name: efw__build__test-golang-glibc
+    description: "efw/build: Test golang-glibc image"
+    parent: barney-test
+    success-message: efw/build golang-glibc test passed ☺️
+    failure-message: efw/build golang-glibc test failed 🧐, review the job output
+    tags:
+      - efw
+    vars:
+      b5_image_name: test/golang-glibc
+
+- job:
+    name: efw__build__test-world
+    description: "efw/build: Test world image"
+    parent: barney-test
+    success-message: efw/build world test passed ☺️
+    failure-message: efw/build world test failed 🧐, review the job output
+    tags:
+      - efw
+    vars:
+      b5_image_name: test/world
+
+- job:
+    name: efw__build__test-world-glibc
+    description: "efw/build: Test world-glibc image"
+    parent: barney-test
+    success-message: efw/build world-glibc test passed ☺️
+    failure-message: efw/build world-glibc test failed 🧐, review the job output
+    tags:
+      - efw
+    vars:
+      b5_image_name: test/world-glibc
+
+- job:
+    name: efw__build__tests-renovate-json5
+    parent: barney-test
+    description: "efw/build: Test if renovate.json5 is a valid json5 file"
+    success-message: Renovate.json5 is a valid JSON5 file ☺️
+    failure-message:
+      Something looks incorrect in the JSON5 file 🧐, review the job
+      output
+    tags:
+      - efw
+    vars:
+      b5_image_name: tests/renovate-json5
+
+- project:
+    description: "Untangle EFW (edge-firewall) MFW build utilities"
+    check: &check_jobs_config
+      jobs:
+        - efw__build__test-build-floor
+        - efw__build__test-toolchain
+        - efw__build__test-toolchain-glibc
+        - efw__build__test-golang
+        - efw__build__test-golang-glibc
+        - efw__build__test-world
+        - efw__build__test-world-glibc
+        - efw__build__tests-renovate-json5
+    # to enable gate job (automerge) uncomment the line below
+    # gate: *check_jobs_config
+    vars:
+      b5_repo_name: code.arista.io/efw/build
