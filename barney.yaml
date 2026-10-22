@@ -41,6 +41,7 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           curl --version
           make --version
@@ -60,6 +61,13 @@ images:
         quota:
           memory: 17Gi
           cpu: 9
+        entry:
+          network:
+            enabled: true
+            firewall:
+              # Accessed domains: 33 total, alpha.gnu.org., cdn.kernel.org., etc.
+              allow: ["fwgroup:any"]
+              deny: ["fwgroup:any"]
         build: |
           set -e
           # barney sets DESTDIR to /dest, but this really confuses openwrt
@@ -79,6 +87,7 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_musl/bin/x86_64-openwrt-linux-musl-gcc --version
 
@@ -95,6 +104,13 @@ images:
         quota:
           memory: 19Gi
           cpu: 9
+        entry:
+          network:
+            enabled: true
+            firewall:
+              # Accessed domains: 32 total, alpha.gnu.org., cdn.kernel.org., etc.
+              allow: ["fwgroup:any"]
+              deny: ["fwgroup:any"]
         build: |
           set -e
           # barney sets DESTDIR to /dest, but this really confuses openwrt
@@ -114,6 +130,7 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           /mfw-toolchain/staging_dir/toolchain-x86_64_gcc-8.4.0_glibc/bin/x86_64-openwrt-linux-gnu-gcc --version
 
@@ -127,6 +144,13 @@ images:
         quota:
           memory: 7Gi
           cpu: 2.5
+        entry:
+          network:
+            enabled: true
+            firewall:
+              # Accessed domains: 35 total, alpha.gnu.org., cdn.kernel.org., etc.
+              allow: ["fwgroup:any"]
+              deny: ["fwgroup:any"]
         build: |
           set -e
           # copy build%toolchain's staging_dir into our source tree
@@ -148,6 +172,7 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           /mfw-toolchain/staging_dir/hostpkg/bin/go version
 
@@ -162,6 +187,13 @@ images:
         quota:
           memory: 7Gi
           cpu: 2.5
+        entry:
+          network:
+            enabled: true
+            firewall:
+              # Accessed domains: 35 total, alpha.gnu.org., cdn.kernel.org., etc.
+              allow: ["fwgroup:any"]
+              deny: ["fwgroup:any"]
         build: |
           set -e
           # copy build%toolchain-glibc's staging_dir into our source tree
@@ -183,6 +215,7 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           /mfw-toolchain/staging_dir/hostpkg/bin/go version
 
@@ -202,6 +235,13 @@ images:
         quota:
           memory: 19.5Gi
           cpu: 8
+        entry:
+          network:
+            enabled: true
+            firewall:
+              # Accessed domains: 37 total, alpha.gnu.org., cdn.kernel.org., etc.
+              allow: ["fwgroup:any"]
+              deny: ["fwgroup:any"]
         build: |
           set -e
           # copy build%toolchain's staging_dir into our source tree
@@ -222,6 +262,7 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           date
           ls
@@ -243,6 +284,13 @@ images:
         quota:
           memory: 20Gi
           cpu: 7
+        entry:
+          network:
+            enabled: true
+            firewall:
+              # Accessed domains: 37 total, alpha.gnu.org., cdn.kernel.org., etc.
+              allow: ["fwgroup:any"]
+              deny: ["fwgroup:any"]
         build: |
           set -e
           # copy build%toolchain's staging_dir into our source tree
@@ -263,6 +311,7 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           date
           ls
@@ -287,5 +336,6 @@ images:
         quota:
           memory: 500Mi
           cpu: 1
+        entry: {network: {enabled: false}}
         build: |
           json5 --validate /src/code.arista.io/efw/build/renovate.json5
